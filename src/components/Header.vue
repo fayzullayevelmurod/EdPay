@@ -5,7 +5,15 @@
             <img src="../assets/images/header_logo.svg" alt="">
         </router-link>
         <nav class="menu">
-            <router-link v-for="(item, i) in menus" :key="i" :to="{name: item.to}" class="nav_link">{{item.name}}</router-link>
+            <router-link 
+                v-for="(item, i) in menus" 
+                :key="i" 
+                :to="{name: item.to}" 
+                :class="`nav_link ${item.name === $route.name ? 'active' : ''}`"
+                @click="active_page = item.name"
+            >
+                {{item.name}}
+            </router-link>
         </nav>
         <button class="header_btn">
             Выйти
@@ -22,6 +30,7 @@ export default {
     name: "Header",
     data () {
         return {
+            active_page: 'Home',
             menus: [
                 {to: 'Home', name: 'Главная'},
                 {to: 'Home', name: 'Подписки'},
@@ -59,8 +68,7 @@ header{
     line-height: 20px;
     transition: .2s ease;
 }
-.nav_link:hover,
-.nav_link:active{
+.nav_link.active{
     color: #F47421;
     font-weight: 600;
     line-height: 18px;
