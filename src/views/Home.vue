@@ -162,6 +162,101 @@
         </svg>
         Создать лендинг
       </button>
+      <h5 class="instraction">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+          <g clip-path="url(#clip0_2641_22064)">
+            <path d="M8 0C3.57841 0 0 3.578 0 8C0 12.4215 3.578 16 8 16C12.4216 16 16 12.422 16 8C16 3.57847 12.422 0 8 0ZM8.82153 11.1757C8.82153 11.4284 8.45297 11.6811 8.00016 11.6811C7.52628 11.6811 7.18934 11.4284 7.18934 11.1757V7.16356C7.18934 6.86872 7.52631 6.66859 8.00016 6.66859C8.45297 6.66859 8.82153 6.86872 8.82153 7.16356V11.1757ZM8.00019 5.69987C7.51578 5.69987 7.13672 5.34184 7.13672 4.94166C7.13672 4.5415 7.51581 4.194 8.00019 4.194C8.47406 4.194 8.85319 4.5415 8.85319 4.94166C8.85319 5.34184 8.47403 5.69987 8.00019 5.69987Z" fill="#202224"/>
+          </g>
+          <defs>
+            <clipPath id="clip0_2641_22064">
+              <rect width="16" height="16" fill="white"/>
+            </clipPath>
+          </defs>
+        </svg>
+        Инструкция
+      </h5>
+    </div>
+  </div>
+  <div class="contact_information">
+    <h2 class="contact_information_title">Контактная информация</h2>
+    <p class="information_text">Телефон и email привязанные к этому аккаунту</p>
+    <form id="contact_form">
+      <div class="contact_section">
+        <label for="phone">Телефон для входа в LeadPay:</label>
+        <input type="number" placeholder="+7(_ _ _) _ _ _-_ _-_ _">
+      </div>
+      <div class="contact_section">
+        <label for="email">Email для уведомлений :</label>
+        <input type="email">
+        <h5 class="valid_text">Email не подтвержден</h5>
+      </div>
+      <div class="contact_section contact_btn">
+        <button type="submit">Сохранить</button>
+      </div>
+    </form>
+    <div class="contact_valid_block">
+      <span class="line_coral"></span>
+      <h5>На <b>school@yandex.ru</b> мы отправили ссылку, перейдите по ней, чтобы привязать e-mail для уведомлений. Без подтверждения e-mail привязан не будет. <router-link class="contact_link" to="/">Отправить ссылку еще раз</router-link></h5>
+    </div>
+  </div>
+  <div class="tarif">
+    <h1>Тарифы</h1>
+    <p>Тариф зависит от выбранного варианта оплаты покупателем</p>
+    <div class="tarif_wrapper">
+      <div class="tarif_block">
+        <div class="tarif_img">
+          <svg xmlns="http://www.w3.org/2000/svg" width="44" height="43" viewBox="0 0 44 43" fill="none">
+            <g clip-path="url(#clip0_2641_22013)">
+              <rect width="43" height="43" transform="translate(0.5)" fill="#F6F6F6"/>
+              <path d="M41.9643 4.59839H2.03571C1.18627 4.59839 0.5 5.28466 0.5 6.1341V36.8484C0.5 37.6978 1.18627 38.3841 2.03571 38.3841H41.9643C42.8137 38.3841 43.5 37.6978 43.5 36.8484V6.1341C43.5 5.28466 42.8137 4.59839 41.9643 4.59839ZM3.95536 8.05375H40.0446V13.8127H3.95536V8.05375ZM40.0446 34.9288H3.95536V18.0359H40.0446V34.9288ZM28.6708 31.8573H36.5893C36.8004 31.8573 36.9732 31.6846 36.9732 31.4734V28.018C36.9732 27.8069 36.8004 27.6341 36.5893 27.6341H28.6708C28.4596 27.6341 28.2868 27.8069 28.2868 28.018V31.4734C28.2868 31.6846 28.4596 31.8573 28.6708 31.8573Z" fill="black" fill-opacity="0.85"/>
+            </g>
+            <defs>
+              <clipPath id="clip0_2641_22013">
+                <rect width="43" height="43" fill="white" transform="translate(0.5)"/>
+              </clipPath>
+            </defs>
+          </svg>
+        </div>
+        <h3>Банковские карты</h3>
+        <h2>2,5%</h2>
+      </div>
+      <div class="tarif_block">
+        <div class="tarif_img">
+          <img src="../assets/images/tarif_apple.svg" alt="">
+        </div>
+        <h3>Apple pay</h3>
+        <h2>1,5%</h2>
+      </div>
+      <div class="tarif_block">
+        <div class="tarif_img">
+          <svg xmlns="http://www.w3.org/2000/svg" width="45" height="56" viewBox="0 0 45 56" fill="none">
+            <g clip-path="url(#clip0_2641_22031)">
+              <path d="M0 12.1893L6.74165 24.311V31.7049L0.0078866 43.8027L0 12.1893Z" fill="#5B57A2"/>
+              <path d="M25.8838 19.9001L32.201 16.0053L45.1294 15.9932L25.8838 27.853V19.9001Z" fill="#D90751"/>
+              <path d="M25.8496 12.1179L25.8854 28.1666L19.1279 23.9899V0L25.8501 12.1179H25.8496Z" fill="#FAB718"/>
+              <path d="M45.131 15.9931L32.2021 16.0053L25.8496 12.1179L19.1279 0L45.1305 15.9931H45.131Z" fill="#ED6F26"/>
+              <path d="M25.8854 43.8699V36.0835L19.1279 31.9862L19.1316 55.9999L25.8854 43.8699Z" fill="#63B22F"/>
+              <path d="M32.1866 40.0106L6.74119 24.311L0 12.1893L45.1035 39.9947L32.1861 40.0106H32.1866Z" fill="#1487C9"/>
+              <path d="M19.1309 56L25.8836 43.87L32.185 40.0106L45.1019 39.9948L19.1309 56Z" fill="#017F36"/>
+              <path d="M0.0078125 43.8027L19.1829 31.9867L12.7363 28.0079L6.74158 31.7049L0.0078125 43.8027Z" fill="#984995"/>
+            </g>
+            <defs>
+              <clipPath id="clip0_2641_22031">
+                <rect width="45" height="56" fill="white"/>
+              </clipPath>
+            </defs>
+          </svg>
+        </div>
+        <h3>СПБ</h3>
+        <h2>0%</h2>
+      </div>
+      <div class="tarif_block">
+        <div class="tarif_img">
+          <img src="../assets/images/tarif_y.svg" alt="">
+        </div>
+        <h3>Юмани</h3>
+        <h2>0%</h2>
+      </div>
     </div>
   </div>
 </template>
@@ -172,85 +267,335 @@ export default {
 }
 </script>
 
-<style Lang="sass">
+<style>
   .home{
     border-radius: 8px;
     background: #F4F3F3;
     padding-bottom: 70px;
-    .home_title{
-      padding: 72px 0;
-      text-align: center;
-      color: #202224;
-      font-family: 'Roboto',sans-serif;
-      font-size: 48px;
-      font-style: normal;
-      font-weight: 600;
-      line-height: 54px;
-    }
-    .home_content{
-      margin: 0 auto;
-      max-width: 532px;
-      .home_content_head{
-        margin-bottom: 32px;
-        color: #202224;
-        font-family: 'Roboto',sans-serif;
-        font-size: 32px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: 36px; 
-        display: flex;
-        align-items: center;
-        gap: 49px;
-      }
-      .home_content_text{
-        color: #202224;
-        font-family: 'Roboto',sans-serif;
-        font-size: 16px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: 20px;
-        margin-bottom: 16px;
-      }
-      .home_list{
-        margin-bottom: 12px;
-        .svg_icon{
-          width: 6px;
-          height: 6px;
-          margin-right: 8px;
-        }
-        color: #202224;
-        font-family: 'Roboto',sans-serif;
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 400;
-        line-height: 20px;
-      }
-    }
-    .home_btn{
-      .home_button{
-        margin: 20px auto 0 ;
-        color: var(--character-primary-inverse, #FFF);
-        text-align: center;
-        font-family: Roboto;
-        font-size: 14px;
-        font-style: normal;
-        font-weight: 600;
-        line-height: 18px; /* 128.571% */
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 16px;
-        width: 218px;
-        height: 42px;
-        border-radius: 6px;
-        background: var(--Primary-Black, #202224);
-        transition: .2s ease;
-        &:hover{
-          border-radius: 6px;
-          background: var(--Secondary-text, #444B52);
-          box-shadow: 0px 4px 4px 0px rgba(32, 34, 36, 0.12);
-        }
-      }
-    }
+  }
+
+  .home_title{
+    padding: 72px 0;
+    text-align: center;
+    color: #202224;
+    font-family: 'Roboto',sans-serif;
+    font-size: 48px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 54px;
+  }
+
+  .home_content{
+    margin: 0 auto;
+    max-width: 532px;
+  }
+
+  .home_content_head{
+    margin-bottom: 32px;
+    color: #202224;
+    font-family: 'Roboto',sans-serif;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 36px; 
+    display: flex;
+    align-items: center;
+    gap: 49px;
+  }
+
+  .home_content_text{
+    color: #202224;
+    font-family: 'Roboto',sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    margin-bottom: 16px;
+  }
+
+  .home_list{
+    margin-bottom: 12px;
+    color: #202224;
+    font-family: 'Roboto',sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+  }
+
+  .home_list .svg_icon{
+    width: 6px;
+    height: 6px;
+    margin-right: 8px;
+  }
+
+  .home_btn{
+    max-width: 400px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .home_btn .home_button{
+    margin: 20px auto 0 ;
+    color: var(--character-primary-inverse, #FFF);
+    text-align: center;
+    font-family: Roboto;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 18px; /* 128.571% */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    width: 218px;
+    height: 42px;
+    border-radius: 6px;
+    background: var(--Primary-Black, #202224);
+    transition: .2s ease;
+  }
+
+  .home_button:hover{
+    border-radius: 6px;
+    background: var(--Secondary-text, #444B52);
+    box-shadow: 0px 4px 4px 0px rgba(32, 34, 36, 0.12);
+  }
+
+  .home_btn .instraction{
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: absolute;
+    bottom: 30%;
+    right: -40px;
+    color: #F47421;
+    font-family: 'Roboto',sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+  }
+
+  .contact_information{
+    margin: 72px auto;
+    padding: 50px 40px;
+    max-width: 898px;
+    border-radius: 8px;
+    background: #FFF;
+    box-shadow: 0px 6px 12px 0px rgba(10, 28, 45, 0.08);
+  }
+  
+  .contact_information_title{
+    text-align: center;
+    margin-bottom: 32px;
+    color:#202224;
+    font-family: 'Roboto',sans-serif;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 36px;
+  }
+
+  .information_text{
+    text-align: center;
+    color:#202224;
+    font-family: 'Roboto',sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    margin-bottom: 32px;
+  }
+
+  #contact_form{
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .contact_section{
+    position: relative;
+    width: 268px;
+    display: flex;
+    align-items: start;
+    flex-direction: column; 
+  }
+
+  .valid_text{
+    position: absolute;
+    bottom: -25px;
+    left: 0;
+    color: #F49321;
+    font-family: 'Roboto',sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; 
+  }
+
+  .contact_valid_block{
+    position: relative;
+    padding: 12px 15px;
+    margin-top: 42px;
+    border-radius: 8px 8px 2px 2px;
+    background: rgba(244, 147, 33, 0.05);
+  }
+
+  .contact_valid_block .line_coral{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    border-radius: 2.5px;
+    background: #F49321;
+  }
+
+  .contact_valid_block h5{
+    color:  #444B52;
+    font-family: 'Roboto',sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 16px;
+  }
+
+  .contact_valid_block .contact_link{
+    color: #F47421;
+    font-family: 'Roboto',sans-serif;
+    font-size: 12px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 16px;
+  }
+
+  .contact_btn{
+    max-width: 218px;
+  }
+  
+  #contact_form .contact_section label{
+    color: #7F848A;
+    font-family: 'Roboto',sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px; 
+    margin-bottom: 8px;
+  }
+
+  .contact_section input{
+    width: 100%;
+    height: 44px;
+    padding: 12px;
+    border-radius: 6px;
+    border: 1px solid #F4F3F3;
+    background: var(--BG-Grey, #F6F6F6);
+    color: var(--Disabled, #BEC1C5);
+    font-family: 'Roboto',sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+  }
+
+  .contact_section input:focus{
+    outline: none;
+  }
+
+  .contact_btn button{
+    width: 100%;
+    height: 42px;
+    margin-bottom: 1px;
+    border-radius: 6px;
+    background: var(--primary-6, #F47421);    
+    color: var(--character-primary-inverse, #FFF);
+    text-align: center;
+    font-family: 'Roboto',sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 18px;
+    transition: .2s ease;
+  }
+
+  .contact_btn button:hover{
+    border-radius: 6px;
+    background: var(--Primary-Orange, #F47421);
+    box-shadow: 0px 4px 4px 0px rgba(184, 80, 12, 0.16);
+  }
+
+  .tarif{
+    padding-bottom: 122px;
+  }
+
+  .tarif h1{
+    text-align: center;
+    color: #202224;
+    font-family: 'Roboto',sans-serif;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 36px;
+    margin-bottom: 32px;
+  }
+
+  .tarif p{
+    text-align: center;
+    color: #444B52;
+    font-family: 'Roboto',sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    margin-bottom: 52px;
+  }
+
+  .tarif_wrapper{
+    max-width: 1170px;
+    gap: 32px;
+    margin: 0 auto;
+    padding: 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .tarif_block{
+    text-align: center;
+    width: 274px;
+    padding: 28px 24px;
+    border-radius: 8px;
+    background: #FFF;
+    box-shadow: 0px 6px 12px 0px rgba(10, 28, 45, 0.08);
+  }
+  
+  .tarif_block .tarif_img{
+    margin: 0 auto 32px auto;
+    width: 86px;
+    height: 86px;
+    border-radius: 50%;
+    background-color: #F6F6F6;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tarif_block h3{
+    color: var(--character-primary-85, var(--Primary-Black, #202224));
+    font-family: 'Roboto',sans-serif;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 20px;
+    margin-bottom: 32px;
+  }
+
+  .tarif_block h2{
+    color: var(--character-primary-85, var(--Primary-Black, #202224));
+    font-family: 'Roboto',sans-serif;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 36px;
   }
 </style>
