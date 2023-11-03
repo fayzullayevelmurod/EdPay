@@ -1,4 +1,5 @@
 <template>
+  <ModalOne />
   <div class="home">
     <h2 class="home_title">Добро пожаловать в LeadPay!</h2>
     <div class="home_content">
@@ -183,11 +184,12 @@
     <form id="contact_form">
       <div class="contact_section">
         <label for="phone">Телефон для входа в LeadPay:</label>
-        <input type="number" placeholder="+7(_ _ _) _ _ _-_ _-_ _">
+        <input class="erorr_input" type="number" placeholder="+7(_ _ _) _ _ _-_ _-_ _">
+        <h5 class="valid_text">Phone не подтвержден</h5>
       </div>
       <div class="contact_section">
         <label for="email">Email для уведомлений :</label>
-        <input type="email">
+        <input class="erorr_input" type="email">
         <h5 class="valid_text">Email не подтвержден</h5>
       </div>
       <div class="contact_section contact_btn">
@@ -262,8 +264,12 @@
 </template>
 
 <script>
+import ModalOne from "@/components/ModalOne.vue"
 export default {
     name: "Home",
+    components: {
+      ModalOne,
+    }
 }
 </script>
 
@@ -496,6 +502,12 @@ export default {
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
+  }
+
+  .contact_section .erorr_input{
+    border-radius: 6px;
+    border: 1px solid #F49321;
+    background: rgba(244, 147, 33, 0.10);
   }
 
   .contact_section input:focus{
