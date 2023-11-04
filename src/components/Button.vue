@@ -37,6 +37,7 @@ export default {
     line-height: 18px;
     transition: .3s ease all;
     border: 1px solid transparent;
+    height: 42px;
 }
 
 .main_button:hover {

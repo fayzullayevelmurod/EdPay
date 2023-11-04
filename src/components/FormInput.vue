@@ -2,20 +2,51 @@
     <div class="input_wrapper">
         <label>{{label}}</label>
         <input
+            v-if="type !== 'phone' && type != 'textarea' && type != 'money'"
             v-model="default_value"
             @input="updateValue()"
-            :class="`${isValue ? 'error' : ''} ${hidden_valid ? 'hidden-error' : ''}`" 
+            :class="`${isValue ? 'error' : ''} ${error ? 'error' : ''} ${hidden_valid ? 'hidden-error' : ''}`" 
             :type="type" 
             @blur="checkValue()"
         >
-        <input type="text">
+        <textarea 
+            v-if="type == 'textarea'"
+            v-model="default_value"
+            @input="updateValue()"
+            :class="`${isValue ? 'error' : ''} ${error ? 'error' : ''} ${hidden_valid ? 'hidden-error' : ''}`" 
+            :type="type" 
+            @blur="checkValue()"
+        ></textarea>
+        <input
+            v-if="type === 'phone'"
+            v-model="maskedValue"
+            v-maska="bindedObject"
+            data-maska="+7(###)###-##-##"
+            @blur="checkValue()"
+            @maska="updateValue()"
+            :class="`${isValue ? 'error' : ''} ${error ? 'error' : ''} ${hidden_valid ? 'hidden-error' : ''}`" 
+        />
+        <input
+            v-if="type === 'money'"
+            v-model="maskedValue"
+            v-maska="bindedObject"
+            data-maska="9 99#.##"
+            data-maska-tokens="9:[0-9]:repeated"
+            data-maska-reversed
+            @maska="updateValue()"
+            @blur="checkValue()"
+            :class="`${isValue ? 'error' : ''} ${error ? 'error' : ''} ${hidden_valid ? 'hidden-error' : ''}`" 
+        >
         <span :class="!isValue ? 'hidden' : ''">{{error_title}}</span>
     </div>
 </template>
 
 <script>
+import { vMaska } from "maska";
+
 export default {
     name: "FormInput",
+    directives: { maska: vMaska },
     props: {
         idx: String,
         field_name: String,
@@ -44,6 +75,12 @@ export default {
     emits: ['update:value', 'check_value'],
     data () {
         return {
+            maskedValue: '',
+            bindedObject: {
+                masked: "",
+                unmasked: "",
+                completed: false,
+            },
             isValue: false,
             default_value: '',
         }
@@ -56,14 +93,27 @@ export default {
     methods: {
         checkValue () {
             if (this.default_value.length) {
-                this.isValue = false;
-                this.$emit('check_value', this.idx, this.field_name, false);
+                if (this.type === 'email') {
+                    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.default_value)) {
+                        this.$emit('check_value', this.idx, this.field_name, true);
+                        this.isValue = true
+                    } else {
+                        this.$emit('check_value', this.idx, this.field_name, false);
+                        this.isValue = false;
+                    }
+                } else {
+                    this.isValue = false;
+                    this.$emit('check_value', this.idx, this.field_name, false);
+                }
             } else {
-                this.$emit('check_value', this.idx, this.field_name, true);
                 this.isValue = true;
+                this.$emit('check_value', this.idx, this.field_name, true);
             }
         },
         updateValue () {
+            if (this.type == 'phone' || this.type == 'money') {
+                this.default_value = this.bindedObject.unmasked;
+            }
             this.$emit('update:value', this.default_value)
             this.checkValue();
         }
@@ -101,14 +151,33 @@ export default {
     line-height: 18px;
     border: none;
     outline: none;
+    border: 1px solid transparent;
 }
 
-.input_wrapper input.error {
+.input_wrapper textarea {
+    border-radius: 6px;
+    border: 1px solid #F4F3F3;
+    background: #F6F6F6;
+    color: #202224;
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    outline: none;
+    padding: 12px;
+    min-height: 149px;
+    resize: vertical;
+}
+
+.input_wrapper input.error,
+.input_wrapper textarea.error {
     border: 1px solid #FF5C65;
     background: rgba(255, 92, 101, 0.10);
 }
 
-.input_wrapper input.hidden-error {
+.input_wrapper input.hidden-error,
+.input_wrapper textarea.hidden-error {
     border: 1px solid #F4F3F3;
     background: #F6F6F6;
 }

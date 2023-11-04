@@ -11,8 +11,8 @@
             </div>
             <div class="buttons">
                 <Button @clicked="fileUpload()" title="Выбрать файл" />
+                <Button v-if="upload_library" :light="true" @clicked="uploadLibrary()" title="Выбрать из библиотеки"/>
                 <button-remove v-if="image_file" @clicked="fileRemove()" />
-                <Button v-if="upload_library" light="true" @clicked="uploadLibrary()" title="Выбрать из библиотеки"/>
             </div>
         </div>
     </div>
