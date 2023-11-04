@@ -163,14 +163,20 @@
 
             <!-- Remove Card -->
             <modal-style v-if="delete_modal" @modalClose="CloseModal">
-            <img src="@/assets/images/modal_warning_icon.svg" alt="" class="img">
-            <div class="title">Вы уверены, что хотите удалить карточку «Как стать дизайнером»?</div>
-            <div class="subtitle">Она больше не будет отображаться на лендинге</div>
-            <div class="modal_buttons">
-                <ButtonBack @clicked="CloseModal()" title="Отмена" />
-                <Button @clicked="removeCard(cardIndex)" title="Удалить"/>
-            </div>
-        </modal-style>
+                <img src="@/assets/images/modal_warning_icon.svg" alt="" class="img">
+                <div class="title">Вы уверены, что хотите удалить карточку «Как стать дизайнером»?</div>
+                <div class="subtitle">Она больше не будет отображаться на лендинге</div>
+                <div class="modal_buttons">
+                    <ButtonBack @clicked="CloseModal()" title="Отмена" />
+                    <Button @clicked="removeCard(cardIndex)" title="Удалить"/>
+                </div>
+            </modal-style>
+
+            <!-- Choose photo library -->
+            <modal-style>
+                <div class="title">Выберите фото</div>
+                <Button title="Применить фото"/>
+            </modal-style>
         </div>
 
         <div class="steps_foot">
