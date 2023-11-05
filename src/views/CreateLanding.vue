@@ -196,6 +196,22 @@
             </div>
         </div>
 
+        <!-- Step 4 -->
+        <div :class="`step_4 step ${current_step == 4 || current_step == 4.5 ? '' : 'hidden'}`">
+            <div class="landing_container">
+                <form-title :error="error_fields['4'].inn" title="1. Реквизиты:"/>
+                <form-input
+                    idx="4"
+                    field_name="inn"
+                    v-model:value="step_fields['4'].inn"
+                    @check_value="checkInputValue"
+                    type="text" 
+                    label="ИНН:"
+                    error_title="*ИНН не найден"
+                />
+            </div>
+        </div>
+
         <div class="steps_foot">
             <div class="foot_container">
                 <button class="back_btn">Отмена</button>
@@ -242,7 +258,7 @@ export default {
     },
     data () {
         return {
-            current_step: 3,
+            current_step: 4,
             step_fields: {
                 '1': {},
                 '2': {
@@ -252,7 +268,8 @@ export default {
                     {name: "Телефон", value: false, mandatory: false},
                     {name: "E-mail", value: false, mandatory: false},
                     {name: "Комментарии", value: false, mandatory: false},
-                ]
+                ],
+                '4': {}
             },
             error_fields: {
                 '1': {
@@ -271,7 +288,10 @@ export default {
                         offer: false,
                     }
                 },
-                '3': false
+                '3': false,
+                '4': {
+                    inn: false,
+                },
             },
             payment_methods: [
                 {name: "Karta Visa, Mastercard, МИР"},
@@ -367,7 +387,7 @@ export default {
                 }
             } else if (parseInt(this.current_step) == 3) {
                 if (this.checkStep3()) {
-                    console.log('ishladi');
+                    this.current_step = 4;
                 }
             }
         },
