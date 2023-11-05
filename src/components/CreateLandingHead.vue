@@ -220,7 +220,7 @@ export default {
     height: 12px;
     background: #F47421;
     border-radius: 50%;
-    bottom: -6.5px;
+    bottom: -5.5px;
     left: 50%;
     transform: translateX(-50%);
 }

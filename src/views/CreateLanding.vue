@@ -81,7 +81,6 @@
                         @check_value="checkInputValue"
                         v-model:value="step_fields['2'][key].file"
                         :upload_library="true"
-
                     />
                     <form-title :error="error_fields['2'][key].title" title="2. Название продукта:"/>
                     <form-input
@@ -171,18 +170,37 @@
                     <Button @clicked="removeCard(cardIndex)" title="Удалить"/>
                 </div>
             </modal-style>
+        </div>
 
-            <!-- Choose photo library -->
-            <modal-style>
-                <div class="title">Выберите фото</div>
-                <Button title="Применить фото"/>
-            </modal-style>
+        <!-- Step 3 -->
+        <div :class="`step_3 step ${current_step == 3 || current_step == 3.5 ? '' : 'hidden'}`">
+            <div class="landing_container">
+                <form-title :error="error_fields['3']" title="1. Набор полей и кнопок для клиента"/>
+                <div class="subtitle">Выберите, какую информацию о себе должен указать клиент. Укажите, какие поля обязательны для заполнения.</div>
+                <div class="checklist_wrapper">
+                    <div :class="`checklist ${i != step_fields['3'].length - 1 ? 'bordered' : ''}`" v-for="(item, i) in step_fields['3']" :key="i">
+                        <Checkbox v-model:value="item.value" :title="item.name"/>
+                        <div class="checklist_right">
+                            <switch-checkbox :disabled="item.value" v-model:value="item.mandatory" />
+                            <div :class="`switch_title ${!item.value ? 'hidden' : ''}`">Сделать обязательным для заполнения</div>
+                        </div>
+                    </div>
+                </div>
+                <div :class="`error_text ${error_fields['3'] ? 'active' : ''}`">*Выберите минимум один способ обратной связи</div>
+            </div>
+            <div class="foot_line">
+                <div class="landing_container">
+                    <div class="title">Вы уже можете посмотреть, как будет выглядеть Ваш будущий лендинг </div>
+                    <div class="subtitle">Нажмите кнопку «Предпросмотр лендинга» ниже. Если он вам нравится — переходите к следующему шагу, загружайте документы и начинайте работать с нами</div>
+                </div>
+            </div>
         </div>
 
         <div class="steps_foot">
             <div class="foot_container">
                 <button class="back_btn">Отмена</button>
-                <div>
+                <div class="buttons">
+                    <Button v-if="current_step == 3 || current_step == 3.5" :light="true" title="Предпросмотр лендинга"/>
                     <Button
                         title="Продолжить"
                         :disabled="check_field"
@@ -205,6 +223,7 @@ import ButtonAdd from '@/components/ButtonAdd.vue';
 import ButtonBack from '@/components/ButtonBack.vue'
 import Checkbox from '@/components/Checkbox.vue';
 import ModalStyle from '@/components/ModalStyle.vue';
+import SwitchCheckbox from '@/components/SwitchCheckbox.vue'
 
 export default {
     name: "CreateLanding",
@@ -219,15 +238,21 @@ export default {
         Checkbox,
         ModalStyle,
         ButtonBack,
+        SwitchCheckbox,
     },
     data () {
         return {
-            current_step: 2,
+            current_step: 3,
             step_fields: {
                 '1': {},
                 '2': {
                     '1': {},
                 },
+                '3': [
+                    {name: "Телефон", value: false, mandatory: false},
+                    {name: "E-mail", value: false, mandatory: false},
+                    {name: "Комментарии", value: false, mandatory: false},
+                ]
             },
             error_fields: {
                 '1': {
@@ -246,6 +271,7 @@ export default {
                         offer: false,
                     }
                 },
+                '3': false
             },
             payment_methods: [
                 {name: "Karta Visa, Mastercard, МИР"},
@@ -270,7 +296,8 @@ export default {
                     marginRight: '0',
                 });
             }
-        }
+        },
+        
     },
     computed: {
         step_error () {
@@ -295,6 +322,8 @@ export default {
                         break;
                     }
                 }
+            } else if (parseInt(this.current_step) == 3) {
+                t = this.error_fields['3']
             }
             return t;
         },
@@ -335,6 +364,9 @@ export default {
                 // Step 2
                 if (this.checkStep2()) {
                     this.current_step = 3;
+                }
+            } else if (parseInt(this.current_step) == 3) {
+                if (this.checkStep3()) {
                     console.log('ishladi');
                 }
             }
@@ -436,7 +468,23 @@ export default {
                 }
             }
             return this.checkStepFields();
-        }
+        },
+        checkStep3 () {
+            let i = 1;
+            this.step_fields['3'].forEach(datas => {
+                if (datas.value) {
+                    i++;
+                }
+            });
+            
+            if (i == 1) {
+                this.error_fields['3'] = true;
+                return false;
+            } else {
+                this.error_fields['3'] = false;
+                return true;
+            }
+        },
     }
 }
 </script>
@@ -487,6 +535,12 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.steps_foot .buttons {
+    display: flex;
+    align-items: center;
+    gap: 24px;
 }
 
 .back_btn {
@@ -620,5 +674,142 @@ export default {
 
 .step_2 .modal_buttons button {
     width: 130px;
+}
+
+.step_2 .border_line {
+    width: 100%;
+    display: block;
+    margin-bottom: 24px;
+}
+
+.step_2 .images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: 884px;
+    padding-bottom: 18px;
+}
+
+.step_2 .images .image {
+    width: calc(100% / 4 - (18px / 4));
+    padding: 0;
+    border-radius: 10px;
+    padding: 6px 6px 3px;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+}
+
+.step_2 .images .image.checked {
+    background: rgba(244, 116, 31, 0.1);
+}
+
+.step_2 .images .image .main_image {
+    width: 100%;
+    border-radius: 8px;
+    border: 2px solid transparent;
+}
+
+.step_2 .images .image.checked .main_image {
+    border: 2px solid #F47421;
+}
+
+.step_2 .images .image .checkbox {
+    display: none;
+    position: absolute;
+    top: 18px;
+    left: 18px;
+}
+
+.step_2 .images .image.checked .checkbox {
+    display: block;
+}
+
+.step_2 .modal_wrapper .choose_photo {
+    padding-left: 32px;
+    padding-right: 32px;
+}
+
+.step_2 .modal_wrapper .choose_photo .title {
+    max-width: 100%;
+    margin-bottom: 18px;
+}
+
+.step_3 .error_text {
+    padding-left: 4px;
+    opacity: 0;
+}
+
+.step_3 .error_text.active {
+    opacity: 1;
+}
+
+.step_3 .checklist_wrapper {
+    border-radius: 6px;
+    border: 1px solid #F4F3F3;
+    background: #FFF;
+}
+
+.step_3 .checklist_wrapper .checklist {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+}
+
+.step_3 .checklist_wrapper .checklist .checkbox_wrapper span {
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 18px;
+}
+
+.step_3 .checklist_wrapper .checklist .checklist_right {
+    display: flex;
+    align-items: center;
+    gap: 19px;
+}
+
+.step_3 .checklist_wrapper .checklist .checklist_right .switch_title {
+    color: #202224;
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+.step_3 .checklist_wrapper .checklist .checklist_right .switch_title.hidden {
+    color: #BEC1C5;
+}
+
+.step_3 .checklist_wrapper .checklist.bordered {
+    border-bottom: 1px solid #F4F3F3;
+}
+
+.step_3 .foot_line {
+    height: auto;
+    margin-top: 44px;
+    padding: 24px 0;
+}
+
+.step_3 .foot_line .title {
+    color: rgba(0, 0, 0, 0.85);
+    font-family: "Roboto", sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 24px;
+    margin-bottom: 8px;
+}
+
+.step_3 .foot_line .subtitle {
+    color: #444B52;
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 22px;
 }
 </style>

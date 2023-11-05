@@ -1,8 +1,8 @@
 <template>
     <div class="checkbox_wrapper">
-        <label @click="checkbox = !checkbox">
+        <label @click="$emit('update:value', !value)">
             <div class="img">
-                <img :class="!checkbox ? 'hidden' : ''" src="@/assets/images/checkbox_icon.svg" alt="">
+                <img :class="!value ? 'hidden' : ''" src="@/assets/images/checkbox_icon.svg" alt="">
             </div>
             <span>{{title}}</span>
         </label>
@@ -20,16 +20,6 @@ export default {
         value: Boolean
     },
     emits: ['update:value'],
-    data () {
-        return {
-            checkbox: false
-        }
-    },
-    watch: {
-        checkbox () {
-            this.$emit('update:value', this.checkbox);
-        }
-    }
 }
 </script>
 

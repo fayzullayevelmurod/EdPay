@@ -1,7 +1,7 @@
 <template>
 <div class="modal_wrapper">
     <div class="modal_bg"></div>
-    <div class="modal_content">
+    <div :class="`modal_content ${content_class}`">
         <button @click="$emit('modalClose')" class="modal_close">
             <img src="@/assets/images/close.svg" alt="">
         </button>
@@ -12,7 +12,13 @@
 
 <script>
 export default {
-    name: "ModalStyle"
+    name: "ModalStyle",
+    props: {
+        content_class: {
+            type: String,
+            default: ''
+        }
+    }
 }
 </script>
 
