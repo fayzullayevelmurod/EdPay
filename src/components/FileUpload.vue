@@ -2,7 +2,7 @@
     <div class="upload_file_wrapper">
         <input type="file" class="file" ref="file" @change="saveFile">
         <img v-if="typeof image_file == 'string'" @click="fileUpload()" :src="require(`@/assets/images/${image_file}`)" :class="`upload_image ${error ? 'hidden' : ''}`">
-        <img @click="fileUpload()" src="@/assets/images/file_upload.svg" :class="`upload_image ${error ? 'hidden' : ''}`" ref="bg_img" :style="typeof image_file == 'string' ? 'display: none;' : ''">
+        <img @click="fileUpload()" src="@/assets/images/file_upload.svg" :class="`upload_image upload_image_main ${error ? 'hidden' : ''}`" ref="bg_img" :style="typeof image_file == 'string' ? 'display: none;' : ''">
         <img @click="fileUpload()" src="@/assets/images/file_upload_error.svg" :class="`upload_image ${!error ? 'hidden' : ''}`">
         <div class="text_wrap">
             <div v-if="!image_file" class="text_placehold">Допустимые форматы: jpg, jpeg, png. Рекомендуемый размер изображения 640х640, размер не более 5 МВ</div>
@@ -66,7 +66,7 @@ export default {
     },
     data () {
         return {
-            image_file: null,
+            image_file: this.value,
             file_upload: file_upload_img,
             open_library_modal: false,
             library_images: [

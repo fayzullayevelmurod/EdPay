@@ -19,6 +19,7 @@ import Checkbox from '@/components/Checkbox.vue';
 import ModalStyle from '@/components/ModalStyle.vue';
 import SwitchCheckbox from '@/components/SwitchCheckbox.vue'
 import Alert from '@/components/Alert.vue'
+import CreateLandingShow from '@/components/CreateLandingShow.vue';
 
 createApp(App)
     .component("CreateLandingHead", CreateLandingHead)
@@ -33,6 +34,7 @@ createApp(App)
     .component("SwitchCheckbox", SwitchCheckbox)
     .component("FormTitle", FormTitle)
     .component("Alert", Alert)
+    .component("CreateLandingShow", CreateLandingShow)
     .use($)
     .use(store)
     .use(router)

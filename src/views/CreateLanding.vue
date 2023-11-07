@@ -1,426 +1,431 @@
 <template>
-    <div> 
-        <create-landing-head v-if="current_step < 6" :current_step="current_step" :error="step_error"/>
-        
-        <!-- Step 1 -->
-        <div :class="`step_1 step ${current_step == 1 || current_step == 1.5 ? '' : 'hidden'}`">
-            <div class="landing_container">
-                <form-title 
-                    :error="error_fields['1'].file" 
-                    title="1. Логотип школы или фото эксперта:" 
-                    warning="Файл не соответствует формату или превышает допустимый размер"
-                />
-                <file-upload
-                    idx="1"
-                    field_name="file"
-                    :error="error_fields['1'].file"
-                    @check_value="checkInputValue"
-                    v-model:value="step_fields['1'].file"
-                />
-                <form-title :error="error_fields['1'].title" title="2. Название лендинга:"/>
-                <form-input
-                    idx="1"
-                    field_name="title"
-                    v-model:value="step_fields['1'].title"
-                    @check_value="checkInputValue"
-                    type="text" 
-                    label="Напишите название/ФИО (его будут видеть ваши клиенты на лендинге):"
-                    error_title="*Поле не заполнено"
-                />
-                <form-title 
-                    :error="error_fields['1'].phone || error_fields['1'].email"
-                    title="3. Контакты школы/эксперта"
-                />
-                <div class="subtitle">Укажите, как клиент может связаться с вами</div>
-                <div class="inputs">
-                    <form-input
-                        idx="1"
-                        field_name="phone"
-                        v-model:value="step_fields['1'].phone"
-                        @check_value="checkInputValue"
-                        type="phone"
-                        label="Телефон:"
-                        error_title="*Поле не заполнено"
-                    />
-                    <form-input
-                        idx="1"
-                        field_name="email"
-                        v-model:value="step_fields['1'].email"
-                        @check_value="checkInputValue"
-                        type="email"
-                        label="Email:"
-                        error_title="*Поле заполнено некорректно"
-                    />
-                    <form-input
-                        v-model:value="step_fields['1'].link"
-                        :hidden_valid="true"
-                        type="text"
-                        label="Другое (ссылка на сайт, соцсеть и т.д.):"
-                    />
-                </div>
-            </div>
-            <div class="foot_line"></div>
-        </div>
-
-        <!-- Step 2 -->
-        <div :class="`step_2 step ${current_step == 2 || current_step == 2.5 ? '' : 'hidden'}`">
-            <div class="landing_container">
-                <div class="form_item" v-for="(item, key, i) in step_fields['2']" :key="i">
-                    <div class="form_item_head">
-                        <div class="form_item_title">
-                            <img src="@/assets/images/accordion_icon.svg" alt="">
-                            <span>Карточка {{i + 1}}</span>
-                        </div>
-                        <button-remove @clicked="confirmRemove(key)"/>
-                    </div>
-                    <form-title :error="error_fields['2'][key].file" title="1. Логотип или фото продукта:"/>
-                    <file-upload
-                        :idx="`2-${key}`"
-                        field_name="file"
-                        :error="error_fields['2'][key].file"
-                        @check_value="checkInputValue"
-                        v-model:value="step_fields['2'][key].file"
-                        :upload_library="true"
-                    />
-                    <form-title :error="error_fields['2'][key].title" title="2. Название продукта:"/>
-                    <form-input
-                        :idx="`2-${key}`"
-                        field_name="title"
-                        v-model:value="step_fields['2'][key].title"
-                        @check_value="checkInputValue"
-                        type="text" 
-                        label="Напишите название продукта:"
-                        error_title="*Поле не заполнено"
-                        :error="error_fields['2'][key].title"
-                    />
-                    <form-title :error="error_fields['2'][key].money" title="3. Цена"/>
-                    <div class="subtitle">Укажите цену, выберите можно ли купить несколько продуктов</div>
-                    <div class="money_input_wrapper">
-                        <form-input
-                            :idx="`2-${key}`"
-                            field_name="money"
-                            v-model:value="step_fields['2'][key].money"
-                            @check_value="checkInputValue"
-                            type="money" 
-                            label="Цена, ₽:"
-                            error_title="*Поле не заполнено"
-                            :error="error_fields['2'][key].money"
-                        />
-                        <Checkbox v-model:value="step_fields['2'][key].several" title="Можно купить несколько"/>
-                    </div>
-                    <form-title :error="error_fields['2'][key].comment" title="4. Описание:"/>
-                    <form-input
-                        :idx="`2-${key}`"
-                        field_name="comment"
-                        v-model:value="step_fields['2'][key].comment"
-                        @check_value="checkInputValue"
-                        type="textarea" 
-                        label="Напишите название продукта:"
-                        error_title="*Превышено допустимое количество символов"
-                        :error="error_fields['2'][key].comment"
-                    />
-                    <form-title :error="error_fields['2'][key].payment" title="5. Способы оплаты"/>
-                    <div class="subtitle">Отметьте каким способом клиент может купить продукт</div>
-                    <div class="form_cards">
-                        <div
-                            @click="addPayment(key, pay.name)" 
-                            :class="`card_item ${step_fields['2'][key]['payment'] && step_fields['2'][key]['payment'].includes(pay.name) ? 'selected' : ''}`" 
-                            v-for="(pay, index) in payment_methods" 
-                            :key="index"
-                        >
-                            <div class="text_wrapper">
-                                <div class="img">
-                                    <img v-if="step_fields['2'][key]['payment'] && step_fields['2'][key]['payment'].includes(pay.name)" src="@/assets/images/checkbox_icon.svg" alt="">
-                                </div>
-                                <span>{{pay.name}}</span>
-                            </div>
-                            <img :src="require(`@/assets/images/payment_card_${index+1}.svg`)" alt="">
-                        </div>
-                        <div v-if="error_fields['2'][key].payment" class="error_text">*Выберите способ оплаты</div>
-                    </div>
-                    <form-title :error="error_fields['2'][key].offer" title="6. Договор публичной оферты"/>
-                    <div class="subtitle">Укажите цену, выберите можно ли купить несколько продуктов</div>
-                    <Checkbox v-model:value="step_fields['2'][key].offer" title="Показывать договор публичной оферты клиенту"/>
-                    <div v-if="step_fields['2'][key].offer" class="ofer_description">
-                        <form-input
-                            :idx="`2-${key}`"
-                            field_name="offer"
-                            v-model:value="step_fields['2'][key].offer_description"
-                            @check_value="checkInputValue"
-                            type="textarea" 
-                            label="Напишите текст договора публичной оферты:"
-                            error_title="*Поле не заполнено"
-                            :error="error_fields['2'][key].offer"
-                        />
-                    </div>
-                </div>
-                <div class="add_button_wrapper">
-                    <button-add @clicked="addCard" title="Добавить ещё карточку"/>
-                </div>
-            </div>
-            <div class="foot_line"></div>
-
-            <!-- Remove Card -->
-            <modal-style v-if="delete_modal" @modalClose="CloseModal">
-                <img src="@/assets/images/modal_warning_icon.svg" alt="" class="img">
-                <div class="title">Вы уверены, что хотите удалить карточку «Как стать дизайнером»?</div>
-                <div class="subtitle">Она больше не будет отображаться на лендинге</div>
-                <div class="modal_buttons">
-                    <ButtonBack @clicked="CloseModal()" title="Отмена" />
-                    <Button @clicked="removeCard(cardIndex)" title="Удалить"/>
-                </div>
-            </modal-style>
-        </div>
-
-        <!-- Step 3 -->
-        <div :class="`step_3 step ${current_step == 3 || current_step == 3.5 ? '' : 'hidden'}`">
-            <div class="landing_container">
-                <form-title :error="error_fields['3']" title="1. Набор полей и кнопок для клиента"/>
-                <div class="subtitle">Выберите, какую информацию о себе должен указать клиент. Укажите, какие поля обязательны для заполнения.</div>
-                <div class="checklist_wrapper">
-                    <div :class="`checklist ${i != step_fields['3'].length - 1 ? 'bordered' : ''}`" v-for="(item, i) in step_fields['3']" :key="i">
-                        <Checkbox v-model:value="item.value" :title="item.name"/>
-                        <div class="checklist_right">
-                            <switch-checkbox :disabled="item.value" v-model:value="item.mandatory" />
-                            <div :class="`switch_title ${!item.value ? 'hidden' : ''}`">Сделать обязательным для заполнения</div>
-                        </div>
-                    </div>
-                </div>
-                <div :class="`error_text ${error_fields['3'] ? 'active' : ''}`">*Выберите минимум один способ обратной связи</div>
-            </div>
-            <div class="foot_line">
+    <div>
+        <div :class="$store.state.landing_show ? 'd-none' : ''">
+            <create-landing-head v-if="current_step < 6" :current_step="current_step" :error="step_error"/>
+            
+            <!-- Step 1 -->
+            <div :class="`step_1 step ${current_step == 1 || current_step == 1.5 ? '' : 'hidden'}`">
                 <div class="landing_container">
-                    <div class="title">Вы уже можете посмотреть, как будет выглядеть Ваш будущий лендинг </div>
-                    <div class="subtitle">Нажмите кнопку «Предпросмотр лендинга» ниже. Если он вам нравится — переходите к следующему шагу, загружайте документы и начинайте работать с нами</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Step 4 -->
-        <div :class="`step_4 step ${current_step == 4 || current_step == 4.5 ? '' : 'hidden'}`">
-            <div class="landing_container">
-                <form-title :error="error_fields['4'].inn" title="1. Реквизиты:"/>
-                <form-input
-                    idx="4"
-                    field_name="inn"
-                    v-model:value="step_fields['4'].inn"
-                    @check_value="checkInputValue"
-                    type="number" 
-                    label="ИНН:"
-                    error_title="*ИНН не найден"
-                    :error="error_fields['4'].inn"
-                />
-                <div v-if="user_data_inn" class="bank_user_data">
-                    <div>
-                        <div class="title">ОГРН/ОГРНИП</div>
-                        <div class="value">2534216162542534862`53486`524386`15438`61534</div>
-                    </div>
-                    <div>
-                        <div class="title">Наименование (для внутренних нужд сервиса, его не увидят клиенты)</div>
-                        <div class="value">ИП Петров В.К.</div>
-                    </div>
-                </div>
-                <form-title :error="bank_card_datas" title="2. Вывод средств:"/>
-                <div class="inputs">
-                    <form-input
-                        idx="4"
-                        field_name="bank_bic"
-                        v-model:value="step_fields['4'].bank_bic"
-                        @check_value="checkInputValue"
-                        type="number" 
-                        label="БИК банка:"
-                        error_title="*БИК банка не найден"
-                        :error="error_fields['4'].bank_bic"
+                    <form-title 
+                        :error="error_fields['1'].file" 
+                        title="1. Логотип школы или фото эксперта:" 
+                        warning="Файл не соответствует формату или превышает допустимый размер"
                     />
-                    
-                    <!-- Bank name -->
-                    <div v-if="check_bank_name" class="bank_user_data">
-                        <div>
-                            <div class="title">Название банка</div>
-                            <div class="value">ПАО Сбербанк</div>
-                        </div>
-                    </div>
-                    
-                    <form-input
-                        idx="4"
-                        field_name="account_number"
-                        v-model:value="step_fields['4'].account_number"
+                    <file-upload
+                        idx="1"
+                        field_name="file"
+                        :error="error_fields['1'].file"
                         @check_value="checkInputValue"
-                        type="number" 
-                        label="Номер р/с:"
-                        error_title="*Поле не заполнено"
-                        :error="error_fields['4'].account_number"
+                        v-model:value="step_fields['1'].file"
                     />
+                    <form-title :error="error_fields['1'].title" title="2. Название лендинга:"/>
                     <form-input
-                        idx="4"
-                        field_name="recipient"
-                        v-model:value="step_fields['4'].recipient"
+                        idx="1"
+                        field_name="title"
+                        v-model:value="step_fields['1'].title"
                         @check_value="checkInputValue"
                         type="text" 
-                        label="Получатель:"
+                        label="Напишите название/ФИО (его будут видеть ваши клиенты на лендинге):"
                         error_title="*Поле не заполнено"
-                        :error="error_fields['4'].recipient"
                     />
-                </div>
-            </div>
-            <div class="foot_line"></div>
-        </div>
-
-        <!-- Step 5 -->
-        <div :class="`step_5 step ${current_step == 5 || current_step == 5.5 ? '' : 'hidden'}`">
-            <div class="landing_container">
-                <form-title :error="error_fields['5']" title="1. Документы:"/>
-                <h4>Приложите фото или сканы следующих документов:</h4>
-                <div :class="`step_block ${i == 4 ? 'last_child' : ''}`" v-for="i in 4" :key="i">Документ {{i}};</div>
-                <div class="select_file">
-                    <img src="@/assets/images/file_icon.svg" alt="" class="file_icon">
-                    <p>Допустимые форматы: gif, jpg, jpeg, png, bmp, tif, tiff, pdf, doc, docx, txt, xls, xlsx<br> Размер одного файла не должен превышать 3 Mb</p>
-                    <input type="file" @change="selectFile" class="select_file_input">
-                    <Button title="Выбрать файл" @clicked="openSelectFile()"/>
-                </div>
-                <div v-if="error_fields['5']" class="error_text">*Прикрепите документы</div>
-                <h3 v-if="step_fields['5'].length" class="uploaded_title">Загруженные документы:</h3>
-                <div v-if="step_fields['5'].length" class="upload_documents_wrapper">
-                    <div :class="`uploaded_documents ${step_fields['5'].length - 1 != idx ? 'border-bottom' : ''}`" v-for="(file, idx) in step_fields[5]" :key="idx">
-                        <div class="uploaded_block">
-                            <div class="block_left">
-                                <img :src="getfileLink(file)" alt="">
-                                <div>
-                                    <h5>{{file.name}}</h5>
-                                    <h6>{{getFileSize(file.size)}}</h6>
-                                </div>
-                            </div>
-                            <button-remove @clicked="removeFile(idx)" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="foot_line"></div>
-        </div>
-
-        <!-- Step 6 -->
-        <div :class="`step_6 step ${current_step == 6 || current_step == 6.5 ? '' : 'hidden'}`">
-            <div class="container">
-                <div class="title">Создание лендинга</div>
-                <Alert type="blue">
-                    <div>Так лендинг будут видеть Ваши клиенты, проверьте его перед публикацией.</div>
-                </Alert>
-                <div class="title title_2">Оформление заказа</div>
-                <div class="card_calculation">
-                    <div class="calculation_left">
-                        <img src="@/assets/images/library_image_3.png" alt="">
-                        <div class="name">Как стать дизайнером</div>
-                    </div>
-                    <div class="calculation_right">
-                        <div class="money">
-                            <div class="money_title">Цена:</div>
-                            <div class="money_amount">{{step_fields['6'].amount}} ₽/шт</div>
-                        </div>
-                        <div class="calculation_input">
-                            <button @click="calculationAmount(false)" :class="`minus ${step_fields['6'].count === 1 ? 'disabled' : ''}`">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                    <path d="M1.57031 7.32227H14.4275C14.506 7.32227 14.5703 7.38655 14.5703 7.46512V8.53655C14.5703 8.61512 14.506 8.67941 14.4275 8.67941H1.57031C1.49174 8.67941 1.42745 8.61512 1.42745 8.53655V7.46512C1.42745 7.38655 1.49174 7.32227 1.57031 7.32227Z" fill="#A1ABB6"/>
-                                </svg>
-                            </button>
-                            <input type="number" v-model="step_fields['6'].count">
-                            <button @click="calculationAmount(true)" class="plus">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                                    <path d="M8.53753 1.57227H7.4661C7.37086 1.57227 7.32324 1.61988 7.32324 1.71512V7.32227H2.00223C1.90699 7.32227 1.85938 7.36988 1.85938 7.46512V8.53655C1.85938 8.63179 1.90699 8.67941 2.00223 8.67941H7.32324V14.2866C7.32324 14.3818 7.37086 14.4294 7.4661 14.4294H8.53753C8.63277 14.4294 8.68039 14.3818 8.68039 14.2866V8.67941H14.0022C14.0975 8.67941 14.1451 8.63179 14.1451 8.53655V7.46512C14.1451 7.36988 14.0975 7.32227 14.0022 7.32227H8.68039V1.71512C8.68039 1.61988 8.63277 1.57227 8.53753 1.57227Z" fill="#202224"/>
-                                </svg>
-                            </button>
-                        </div>
-                        <div class="money">
-                            <div class="money_title">Итого:</div>
-                            <div class="money_amount">{{step_fields['6'].all_amount}} ₽</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="calculation_form">
-                    <form-title title="1. Способы оплаты" />
-                    <div class="subtitle">Выберите способ оплаты:</div>
-                    <div class="form_cards">
-                        <div
-                            @click="addPayment2(pay.name)" 
-                            :class="`card_item ${step_fields['6']['payment'] && step_fields['6']['payment'].includes(pay.name) ? 'selected' : ''}`" 
-                            v-for="(pay, index) in payment_methods" 
-                            :key="index"
-                        >
-                            <div class="text_wrapper">
-                                <div class="img">
-                                    <img v-if="step_fields['6']['payment'] && step_fields['6']['payment'].includes(pay.name)" src="@/assets/images/checkbox_icon.svg" alt="">
-                                </div>
-                                <span>{{pay.name}}</span>
-                            </div>
-                            <img :src="require(`@/assets/images/payment_card_${index+1}.svg`)" alt="">
-                        </div>
-                        <div v-if="error_fields['6'].payment" class="error_text">*Выберите способ оплаты</div>
-                    </div>
-                    <form-title title="2. Контактные данные" />
-                    <div class="calculation_form_wrapper">
-                        <div class="calculation_form_inputs">
-                            <form-input
-                                idx="6"
-                                field_name="phone"
-                                v-model:value="step_fields['6'].phone"
-                                @check_value="checkInputValue"
-                                type="phone" 
-                                label="<span>*</span>Телефон:"
-                                error_title="*Поле не заполнено"
-                                :error="error_fields['6'].phone"
-                            />
-                            <form-input
-                                idx="6"
-                                field_name="email"
-                                v-model:value="step_fields['6'].email"
-                                @check_value="checkInputValue"
-                                type="email" 
-                                label="<span>*</span>E-mail :"
-                                error_title="*Поле заполнено некорректно"
-                                :error="error_fields['6'].email"
-                            />
-                        </div>
+                    <form-title 
+                        :error="error_fields['1'].phone || error_fields['1'].email"
+                        title="3. Контакты школы/эксперта"
+                    />
+                    <div class="subtitle">Укажите, как клиент может связаться с вами</div>
+                    <div class="inputs">
                         <form-input
-                            idx="6"
-                            field_name="comment"
-                            v-model:value="step_fields['6'].comment"
+                            idx="1"
+                            field_name="phone"
+                            v-model:value="step_fields['1'].phone"
                             @check_value="checkInputValue"
-                            type="textarea" 
-                            label="Комментарий:"
-                            error_title="*Превышено допустимое количество символов"
-                            :error="error_fields['6'].comment"
+                            type="phone"
+                            label="Телефон:"
+                            error_title="*Поле не заполнено"
+                        />
+                        <form-input
+                            idx="1"
+                            field_name="email"
+                            v-model:value="step_fields['1'].email"
+                            @check_value="checkInputValue"
+                            type="email"
+                            label="Email:"
+                            error_title="*Поле заполнено некорректно"
+                        />
+                        <form-input
+                            v-model:value="step_fields['1'].link"
+                            :hidden_valid="true"
+                            type="text"
+                            label="Другое (ссылка на сайт, соцсеть и т.д.):"
                         />
                     </div>
-                    <img src="@/assets/images/calculation_line.svg" alt="" class="line">
-                    <div class="form_card_foot">
-                        <Button title="Оплатить"/>
-                        <div class="foot_text">
-                            <div class="name">Всего к оплате:</div>
-                            <div class="value">9 999.99 ₽</div>
+                </div>
+                <div class="foot_line"></div>
+            </div>
+    
+            <!-- Step 2 -->
+            <div :class="`step_2 step ${current_step == 2 || current_step == 2.5 ? '' : 'hidden'}`">
+                <div class="landing_container">
+                    <div class="form_item" v-for="(item, key, i) in step_fields['2']" :key="i">
+                        <div class="form_item_head">
+                            <div class="form_item_title">
+                                <img src="@/assets/images/accordion_icon.svg" alt="">
+                                <span>Карточка {{i + 1}}</span>
+                            </div>
+                            <button-remove @clicked="confirmRemove(key)"/>
+                        </div>
+                        <form-title :error="error_fields['2'][key].file" title="1. Логотип или фото продукта:"/>
+                        <file-upload
+                            :idx="`2-${key}`"
+                            field_name="file"
+                            :error="error_fields['2'][key].file"
+                            @check_value="checkInputValue"
+                            v-model:value="step_fields['2'][key].file"
+                            :upload_library="true"
+                        />
+                        <form-title :error="error_fields['2'][key].title" title="2. Название продукта:"/>
+                        <form-input
+                            :idx="`2-${key}`"
+                            field_name="title"
+                            v-model:value="step_fields['2'][key].title"
+                            @check_value="checkInputValue"
+                            type="text" 
+                            label="Напишите название продукта:"
+                            error_title="*Поле не заполнено"
+                            :error="error_fields['2'][key].title"
+                        />
+                        <form-title :error="error_fields['2'][key].money" title="3. Цена"/>
+                        <div class="subtitle">Укажите цену, выберите можно ли купить несколько продуктов</div>
+                        <div class="money_input_wrapper">
+                            <form-input
+                                :idx="`2-${key}`"
+                                field_name="money"
+                                v-model:value="step_fields['2'][key].money"
+                                @check_value="checkInputValue"
+                                type="money" 
+                                label="Цена, ₽:"
+                                error_title="*Поле не заполнено"
+                                :error="error_fields['2'][key].money"
+                            />
+                            <Checkbox v-model:value="step_fields['2'][key].several" title="Можно купить несколько"/>
+                        </div>
+                        <form-title :error="error_fields['2'][key].descrioption" title="4. Описание:"/>
+                        <form-input
+                            :idx="`2-${key}`"
+                            field_name="descrioption"
+                            v-model:value="step_fields['2'][key].descrioption"
+                            @check_value="checkInputValue"
+                            type="textarea" 
+                            label="Напишите название продукта:"
+                            error_title="*Превышено допустимое количество символов"
+                            :error="error_fields['2'][key].descrioption"
+                        />
+                        <form-title :error="error_fields['2'][key].payment" title="5. Способы оплаты"/>
+                        <div class="subtitle">Отметьте каким способом клиент может купить продукт</div>
+                        <div class="form_cards">
+                            <div
+                                @click="addPayment(key, pay.name)" 
+                                :class="`card_item ${step_fields['2'][key]['payment'] && step_fields['2'][key]['payment'].includes(pay.name) ? 'selected' : ''}`" 
+                                v-for="(pay, index) in payment_methods" 
+                                :key="index"
+                            >
+                                <div class="text_wrapper">
+                                    <div class="img">
+                                        <img v-if="step_fields['2'][key]['payment'] && step_fields['2'][key]['payment'].includes(pay.name)" src="@/assets/images/checkbox_icon.svg" alt="">
+                                    </div>
+                                    <span>{{pay.name}}</span>
+                                </div>
+                                <img :src="require(`@/assets/images/payment_card_${index+1}.svg`)" alt="">
+                            </div>
+                            <div v-if="error_fields['2'][key].payment" class="error_text">*Выберите способ оплаты</div>
+                        </div>
+                        <form-title :error="error_fields['2'][key].offer" title="6. Договор публичной оферты"/>
+                        <div class="subtitle">Укажите цену, выберите можно ли купить несколько продуктов</div>
+                        <Checkbox v-model:value="step_fields['2'][key].offer" title="Показывать договор публичной оферты клиенту"/>
+                        <div v-if="step_fields['2'][key].offer" class="ofer_description">
+                            <form-input
+                                :idx="`2-${key}`"
+                                field_name="offer"
+                                v-model:value="step_fields['2'][key].offer_description"
+                                @check_value="checkInputValue"
+                                type="textarea" 
+                                label="Напишите текст договора публичной оферты:"
+                                error_title="*Поле не заполнено"
+                                :error="error_fields['2'][key].offer"
+                            />
+                        </div>
+                    </div>
+                    <div class="add_button_wrapper">
+                        <button-add @clicked="addCard" title="Добавить ещё карточку"/>
+                    </div>
+                </div>
+                <div class="foot_line"></div>
+    
+                <!-- Remove Card -->
+                <modal-style v-if="delete_modal" @modalClose="CloseModal">
+                    <img src="@/assets/images/modal_warning_icon.svg" alt="" class="img">
+                    <div class="title">Вы уверены, что хотите удалить карточку «Как стать дизайнером»?</div>
+                    <div class="subtitle">Она больше не будет отображаться на лендинге</div>
+                    <div class="modal_buttons">
+                        <ButtonBack @clicked="CloseModal()" title="Отмена" />
+                        <Button @clicked="removeCard(cardIndex)" title="Удалить"/>
+                    </div>
+                </modal-style>
+            </div>
+    
+            <!-- Step 3 -->
+            <div :class="`step_3 step ${current_step == 3 || current_step == 3.5 ? '' : 'hidden'}`">
+                <div class="landing_container">
+                    <form-title :error="error_fields['3']" title="1. Набор полей и кнопок для клиента"/>
+                    <div class="subtitle">Выберите, какую информацию о себе должен указать клиент. Укажите, какие поля обязательны для заполнения.</div>
+                    <div class="checklist_wrapper">
+                        <div :class="`checklist ${i != step_fields['3'].length - 1 ? 'bordered' : ''}`" v-for="(item, i) in step_fields['3']" :key="i">
+                            <Checkbox v-model:value="item.value" :title="item.name"/>
+                            <div class="checklist_right">
+                                <switch-checkbox :disabled="item.value" v-model:value="item.mandatory" />
+                                <div :class="`switch_title ${!item.value ? 'hidden' : ''}`">Сделать обязательным для заполнения</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div :class="`error_text ${error_fields['3'] ? 'active' : ''}`">*Выберите минимум один способ обратной связи</div>
+                </div>
+                <div class="foot_line">
+                    <div class="landing_container">
+                        <div class="title">Вы уже можете посмотреть, как будет выглядеть Ваш будущий лендинг </div>
+                        <div class="subtitle">Нажмите кнопку «Предпросмотр лендинга» ниже. Если он вам нравится — переходите к следующему шагу, загружайте документы и начинайте работать с нами</div>
+                    </div>
+                </div>
+            </div>
+    
+            <!-- Step 4 -->
+            <div :class="`step_4 step ${current_step == 4 || current_step == 4.5 ? '' : 'hidden'}`">
+                <div class="landing_container">
+                    <form-title :error="error_fields['4'].inn" title="1. Реквизиты:"/>
+                    <form-input
+                        idx="4"
+                        field_name="inn"
+                        v-model:value="step_fields['4'].inn"
+                        @check_value="checkInputValue"
+                        type="number" 
+                        label="ИНН:"
+                        error_title="*ИНН не найден"
+                        :error="error_fields['4'].inn"
+                    />
+                    <div v-if="user_data_inn" class="bank_user_data">
+                        <div>
+                            <div class="title">ОГРН/ОГРНИП</div>
+                            <div class="value">2534216162542534862`53486`524386`15438`61534</div>
+                        </div>
+                        <div>
+                            <div class="title">Наименование (для внутренних нужд сервиса, его не увидят клиенты)</div>
+                            <div class="value">ИП Петров В.К.</div>
+                        </div>
+                    </div>
+                    <form-title :error="bank_card_datas" title="2. Вывод средств:"/>
+                    <div class="inputs">
+                        <form-input
+                            idx="4"
+                            field_name="bank_bic"
+                            v-model:value="step_fields['4'].bank_bic"
+                            @check_value="checkInputValue"
+                            type="number" 
+                            label="БИК банка:"
+                            error_title="*БИК банка не найден"
+                            :error="error_fields['4'].bank_bic"
+                        />
+                        
+                        <!-- Bank name -->
+                        <div v-if="check_bank_name" class="bank_user_data">
+                            <div>
+                                <div class="title">Название банка</div>
+                                <div class="value">ПАО Сбербанк</div>
+                            </div>
+                        </div>
+                        
+                        <form-input
+                            idx="4"
+                            field_name="account_number"
+                            v-model:value="step_fields['4'].account_number"
+                            @check_value="checkInputValue"
+                            type="number" 
+                            label="Номер р/с:"
+                            error_title="*Поле не заполнено"
+                            :error="error_fields['4'].account_number"
+                        />
+                        <form-input
+                            idx="4"
+                            field_name="recipient"
+                            v-model:value="step_fields['4'].recipient"
+                            @check_value="checkInputValue"
+                            type="text" 
+                            label="Получатель:"
+                            error_title="*Поле не заполнено"
+                            :error="error_fields['4'].recipient"
+                        />
+                    </div>
+                </div>
+                <div class="foot_line"></div>
+            </div>
+    
+            <!-- Step 5 -->
+            <div :class="`step_5 step ${current_step == 5 || current_step == 5.5 ? '' : 'hidden'}`">
+                <div class="landing_container">
+                    <form-title :error="error_fields['5']" title="1. Документы:"/>
+                    <h4>Приложите фото или сканы следующих документов:</h4>
+                    <div :class="`step_block ${i == 4 ? 'last_child' : ''}`" v-for="i in 4" :key="i">Документ {{i}};</div>
+                    <div class="select_file">
+                        <img src="@/assets/images/file_icon.svg" alt="" class="file_icon">
+                        <p>Допустимые форматы: gif, jpg, jpeg, png, bmp, tif, tiff, pdf, doc, docx, txt, xls, xlsx<br> Размер одного файла не должен превышать 3 Mb</p>
+                        <input type="file" @change="selectFile" class="select_file_input">
+                        <Button title="Выбрать файл" @clicked="openSelectFile()"/>
+                    </div>
+                    <div v-if="error_fields['5']" class="error_text">*Прикрепите документы</div>
+                    <h3 v-if="step_fields['5'].length" class="uploaded_title">Загруженные документы:</h3>
+                    <div v-if="step_fields['5'].length" class="upload_documents_wrapper">
+                        <div :class="`uploaded_documents ${step_fields['5'].length - 1 != idx ? 'border-bottom' : ''}`" v-for="(file, idx) in step_fields[5]" :key="idx">
+                            <div class="uploaded_block">
+                                <div class="block_left">
+                                    <img :src="getfileLink(file)" alt="">
+                                    <div>
+                                        <h5>{{file.name}}</h5>
+                                        <h6>{{getFileSize(file.size)}}</h6>
+                                    </div>
+                                </div>
+                                <button-remove @clicked="removeFile(idx)" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="foot_line"></div>
+            </div>
+    
+            <!-- Step 6 -->
+            <div :class="`step_6 step ${current_step == 6 || current_step == 6.5 ? '' : 'hidden'}`">
+                <div class="container">
+                    <div class="title">Создание лендинга</div>
+                    <Alert type="blue">
+                        <div>Так лендинг будут видеть Ваши клиенты, проверьте его перед публикацией.</div>
+                    </Alert>
+                    <div class="title title_2">Оформление заказа</div>
+                    <div class="card_calculation">
+                        <div class="calculation_left">
+                            <img src="@/assets/images/library_image_3.png" alt="">
+                            <div class="name">Как стать дизайнером</div>
+                        </div>
+                        <div class="calculation_right">
+                            <div class="money">
+                                <div class="money_title">Цена:</div>
+                                <div class="money_amount">{{numberFormat(step_fields['6'].amount)}} ₽/шт</div>
+                            </div>
+                            <div class="calculation_input">
+                                <button @click="calculationAmount(false)" :class="`minus ${step_fields['6'].count === 1 ? 'disabled' : ''}`">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <path d="M1.57031 7.32227H14.4275C14.506 7.32227 14.5703 7.38655 14.5703 7.46512V8.53655C14.5703 8.61512 14.506 8.67941 14.4275 8.67941H1.57031C1.49174 8.67941 1.42745 8.61512 1.42745 8.53655V7.46512C1.42745 7.38655 1.49174 7.32227 1.57031 7.32227Z" fill="#A1ABB6"/>
+                                    </svg>
+                                </button>
+                                <input type="number" v-model="step_fields['6'].count">
+                                <button @click="calculationAmount(true)" class="plus">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                        <path d="M8.53753 1.57227H7.4661C7.37086 1.57227 7.32324 1.61988 7.32324 1.71512V7.32227H2.00223C1.90699 7.32227 1.85938 7.36988 1.85938 7.46512V8.53655C1.85938 8.63179 1.90699 8.67941 2.00223 8.67941H7.32324V14.2866C7.32324 14.3818 7.37086 14.4294 7.4661 14.4294H8.53753C8.63277 14.4294 8.68039 14.3818 8.68039 14.2866V8.67941H14.0022C14.0975 8.67941 14.1451 8.63179 14.1451 8.53655V7.46512C14.1451 7.36988 14.0975 7.32227 14.0022 7.32227H8.68039V1.71512C8.68039 1.61988 8.63277 1.57227 8.53753 1.57227Z" fill="#202224"/>
+                                    </svg>
+                                </button>
+                            </div>
+                            <div class="money">
+                                <div class="money_title">Итого:</div>
+                                <div class="money_amount">{{numberFormat(step_fields['6'].all_amount)}} ₽</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="calculation_form">
+                        <form-title title="1. Способы оплаты" />
+                        <div class="subtitle">Выберите способ оплаты:</div>
+                        <div class="form_cards">
+                            <div
+                                @click="addPayment2(pay.name)" 
+                                :class="`card_item ${step_fields['6']['payment'] && step_fields['6']['payment'].includes(pay.name) ? 'selected' : ''}`" 
+                                v-for="(pay, index) in payment_methods" 
+                                :key="index"
+                            >
+                                <div class="text_wrapper">
+                                    <div class="img">
+                                        <img v-if="step_fields['6']['payment'] && step_fields['6']['payment'].includes(pay.name)" src="@/assets/images/checkbox_icon.svg" alt="">
+                                    </div>
+                                    <span>{{pay.name}}</span>
+                                </div>
+                                <img :src="require(`@/assets/images/payment_card_${index+1}.svg`)" alt="">
+                            </div>
+                            <div v-if="error_fields['6'].payment" class="error_text">*Выберите способ оплаты</div>
+                        </div>
+                        <form-title title="2. Контактные данные" />
+                        <div class="calculation_form_wrapper">
+                            <div class="calculation_form_inputs">
+                                <form-input
+                                    idx="6"
+                                    field_name="phone"
+                                    v-model:value="step_fields['6'].phone"
+                                    @check_value="checkInputValue"
+                                    type="phone" 
+                                    label="<span>*</span>Телефон:"
+                                    error_title="*Поле не заполнено"
+                                    :error="error_fields['6'].phone"
+                                />
+                                <form-input
+                                    idx="6"
+                                    field_name="email"
+                                    v-model:value="step_fields['6'].email"
+                                    @check_value="checkInputValue"
+                                    type="email" 
+                                    label="<span>*</span>E-mail :"
+                                    error_title="*Поле заполнено некорректно"
+                                    :error="error_fields['6'].email"
+                                />
+                            </div>
+                            <form-input
+                                idx="6"
+                                field_name="comment"
+                                v-model:value="step_fields['6'].comment"
+                                @check_value="checkInputValue"
+                                type="textarea" 
+                                label="Комментарий:"
+                                error_title="*Превышено допустимое количество символов"
+                                :error="error_fields['6'].comment"
+                            />
+                        </div>
+                        <img src="@/assets/images/calculation_line.svg" alt="" class="line">
+                        <div class="form_card_foot">
+                            <Button title="Оплатить"/>
+                            <div class="foot_text">
+                                <div class="name">Всего к оплате:</div>
+                                <div class="value">{{numberFormat(this.step_fields['6'].all_amount)}} ₽</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-
-        <div class="steps_foot">
-            <div v-if="current_step == 6" class="foot_container foot_container_1">
-                <Checkbox v-model:value="step_fields['6'].agree" title="Нажимая кнопку и отправляя данные формы, Вы даёте <a href='#'>согласие на обработку персональных данных</a> и соглашаетесь с <a href='#'>политикой конфиденциальности</a>"/>
-                <Alert type="coral">
-                    <div>Перед публикацией вся информация проходит модерацию</div>
-                    <div>Проверка может занять до трех дней (но мы стараемся успеть за день). После проверки на почту <span>school@yandex.ru</span> придет уведомление, прошел лендинг модерацию или нет.</div>
-                </Alert>
-            </div>
-            <div class="foot_container">
-                <button class="back_btn">Отмена</button>
-                <div class="buttons">
-                    <Button v-if="current_step == 3 || current_step == 3.5 || current_step == 4 || current_step == 4.5 || current_step == 5" :light="true" title="Предпросмотр лендинга"/>
-                    <Button
-                        title="Продолжить"
-                        :disabled="check_field"
-                        @clicked="SaveDatas()"
-                    />
+    
+            <div class="steps_foot">
+                <div v-if="current_step == 6" class="foot_container foot_container_1">
+                    <Checkbox v-model:value="step_fields['6'].agree" title="Нажимая кнопку и отправляя данные формы, Вы даёте <a href='#'>согласие на обработку персональных данных</a> и соглашаетесь с <a href='#'>политикой конфиденциальности</a>"/>
+                    <Alert type="coral">
+                        <div>Перед публикацией вся информация проходит модерацию</div>
+                        <div>Проверка может занять до трех дней (но мы стараемся успеть за день). После проверки на почту <span>school@yandex.ru</span> придет уведомление, прошел лендинг модерацию или нет.</div>
+                    </Alert>
+                </div>
+                <div class="foot_container">
+                    <button @click="backStep()" class="back_btn">Отмена</button>
+                    <div class="buttons">
+                        <Button @clicked="showCard()" v-if="current_step == 3 || current_step == 3.5 || current_step == 4 || current_step == 4.5 || current_step == 5" :light="true" title="Предпросмотр лендинга"/>
+                        <Button
+                            title="Продолжить"
+                            :disabled="check_field"
+                            @clicked="SaveDatas()"
+                        />
+                    </div>
                 </div>
             </div>
+        </div>
+        <div :class="!$store.state.landing_show ? 'd-none' : ''">
+            <create-landing-show @go_back="goBack()" />
         </div>
     </div>
 </template>
@@ -430,7 +435,7 @@ export default {
     name: "CreateLanding",
     data () {
         return {
-            current_step: 6,
+            current_step: 1,
             step_fields: {
                 '1': {},
                 '2': {
@@ -448,6 +453,9 @@ export default {
                     count: 1,
                     all_amount: 9999.99,
                     payment: [],
+                    phone: '',
+                    email: '',
+                    comment: '',
                     agree: false,
                 }
             },
@@ -463,7 +471,7 @@ export default {
                         file: false,
                         title: false,
                         money: false,
-                        comment: false,
+                        descrioption: false,
                         payment: false,
                         offer: false,
                     }
@@ -524,7 +532,7 @@ export default {
                         errors.file ||
                         errors.title ||
                         errors.money ||
-                        errors.comment ||
+                        errors.descrioption ||
                         errors.payment ||
                         errors.offer
                     ) {
@@ -624,14 +632,17 @@ export default {
             this.delete_modal = false;
         },
         SaveDatas () {
+            this.$store.commit('saveData', this.step_fields);
+            this.$store.commit('changeCurrentStep', parseInt(this.current_step));
             if (parseInt(this.current_step) == 1) {
 
                 // Step 1
                 this.current_step = 2;
             } else if (parseInt(this.current_step) == 2) {
-
+                
                 // Step 2
                 if (this.checkStep2()) {
+                    // this.$store.commit('changeLandingShow', true);
                     this.current_step = 3;
                 }
             } else if (parseInt(this.current_step) == 3) {
@@ -652,6 +663,24 @@ export default {
                 if (this.checkStep5()) {
                     this.current_step = 6;
                 }
+            } else if (parseInt(this.current_step) == 6) {
+
+                // Step 6
+                if (this.checkStep6()) {
+                    this.current_step = 6;
+                }
+            }
+        },
+        showCard () {
+            this.$store.commit('saveData', this.step_fields)
+            this.$store.commit('changeLandingShow', true);
+        },
+        goBack () {
+            this.$store.commit('changeLandingShow', false);
+        },
+        backStep () {
+            if (parseInt(this.current_step) !== 1) {
+                this.current_step = parseInt(this.current_step) - 1;
             }
         },
         checkInputValue (idx, name, value) {
@@ -681,7 +710,7 @@ export default {
                                             file: false,
                                             title: false,
                                             money: false,
-                                            comment: false,
+                                            descrioption: false,
                                             payment: false,
                                             offer_description: false,
                                         }
@@ -712,6 +741,7 @@ export default {
             } else {
                 this.step_fields['6']['payment'].push(payName)
             }
+            this.error_fields['6'].payment = false;
         },
         checkStepFields () {
             let field = false;
@@ -721,7 +751,7 @@ export default {
                     datas.file &&
                     datas.title &&
                     datas.money && 
-                    datas.comment &&
+                    datas.descrioption &&
                     (datas.payment && datas.payment.length)
                 ) {
                     if ((datas.offer && datas.offer_description) || !datas.offer) {
@@ -748,8 +778,8 @@ export default {
                 if (!datas.money) {
                     this.error_fields['2'][key].money = true;
                 }
-                if (!datas.comment) {
-                    this.error_fields['2'][key].comment = true;
+                if (!datas.descrioption) {
+                    this.error_fields['2'][key].descrioption = true;
                 }
                 if (!datas.payment || !datas.payment.length) {
                     this.error_fields['2'][key].payment = true;
@@ -793,6 +823,25 @@ export default {
             }
             return true;
         },
+        checkStep6 () {
+            let t = true;
+            if (!this.step_fields['6'].payment.length) {
+                t = false;
+                this.error_fields['6'].payment = true;
+            }
+            if (!this.step_fields['6'].phone.length) {
+                t = false;
+                this.error_fields['6'].phone = true;
+            }
+            if (!this.step_fields['6'].email.length) {
+                t = false;
+                this.error_fields['6'].email = true;
+            }
+            if (!this.step_fields['6'].comment.length) {
+                t = false;
+                this.error_fields['6'].comment = true;
+            }
+        },
         openSelectFile () {
             $('.select_file_input').click();
         },
@@ -820,12 +869,19 @@ export default {
                 }
             }
             this.step_fields['6'].all_amount = this.step_fields['6'].amount * this.step_fields['6'].count;
+        },
+        numberFormat (num) {
+            return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
         }
     }
 }
 </script>
 
 <style>
+.d-none {
+    display: none;
+}
+
 .uploaded_title {
     color: var(--character-title-85, var(--Primary-Black, #202224));
     font-family: 'Roboto',sans-serif;

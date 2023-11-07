@@ -1,22 +1,22 @@
 <template>
-    <div class="best_school_in">
+    <div class="best_school_in" v-if="$store.state.landing_show">
         <div class="best_img">
-            <img src="../assets/images/best_School.png" alt="">
+            <img :src="getImageSrc($store.state.datas['1'].file)" alt="">
         </div>
         <div class="best_text">
-            <h3>Лучшая школа онлайн-образования</h3>
+            <h3>{{$store.state.datas['1'].title}}</h3>
             <div class="best_text_in">
                 <div class="best_links">
                     <span>Телефон:</span>
-                    <h5>+7(999)999-99-99</h5>
+                    <h5>{{ $store.state.datas['1'].phone }}</h5>
                 </div>
                 <div class="best_links">
                     <span>E-mail:</span>
-                    <h5>school@yandex.ru</h5>
+                    <h5>{{ $store.state.datas['1'].email }}</h5>
                 </div>
                 <div class="best_links">
                     <span>Сайт:</span>
-                    <h5 class="best_site">school.ru</h5>
+                    <h5 class="best_site">{{ $store.state.datas['1'].link }}</h5>
                 </div>
             </div>
         </div>
@@ -26,6 +26,11 @@
 <script>
 export default {
     name: "SchoolTitle",
+    methods: {
+        getImageSrc (file) {
+            return URL.createObjectURL(file);
+        }
+    }
 }
 </script>
 
@@ -39,6 +44,13 @@ export default {
     margin: 0 auto 72px auto;
     border-radius: 8px;
     background: #FFF;
+}
+
+.bestSchool .best_school_in .best_img img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
 }
 
 .best_school_in .best_text h3 {

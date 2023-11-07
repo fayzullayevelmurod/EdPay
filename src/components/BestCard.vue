@@ -1,32 +1,49 @@
 <template>
-    <div class="best_card">
-        <div class="best_card_head">
-            <img src="../assets/images/card_img.png" alt="">
-        </div>
-        <div class="best_card_body">
-            <h3>Как стать дизайнером</h3>
-            <p>Вы узнаете всё о современных направлениях и концепциях в дизайне, попрактикуетесь на реальных задачах. Поймёте, в какой специализации хотите развиваться и как зарабатывать на любимом деле.</p>
-        </div>
-        <div class="best_card_bottom">
-            <div>
-                <span>Цена:</span>
-                <h4>9 999.99</h4>
+    <div class="best_card_wrapper">
+        <div class="best_card" v-for="(item, key, i) in $store.state.datas['2']" :key="i">
+            <div class="best_card_head">
+                <img v-if="typeof $store.state.datas['2'][key].file == 'string'" :src="require(`@/assets/images/${$store.state.datas['2'][key].file}`)" alt="">
+                <img v-if="typeof $store.state.datas['2'][key].file == 'object'" :src="getFileLink($store.state.datas['2'][key].file)" alt="">
             </div>
-            <button>Купить</button>
+            <div class="best_card_body">
+                <h3>{{ $store.state.datas['2'][key].title }}</h3>
+                <p>{{ $store.state.datas['2'][key].descrioption }}</p>
+            </div>
+            <div class="best_card_bottom">
+                <div>
+                    <span>Цена:</span>
+                    <h4>{{ $store.state.datas['2'][key].money }}</h4>
+                </div>
+                <button>Купить</button>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 export default {
-    name: "BestCard"
+    name: "BestCard",
+    methods: {
+        getFileLink (file) {
+            return URL.createObjectURL(file)
+        }
+    }
 }
 </script>
 
 <style>
-.best_card{
-    max-width: 404px;
+.best_card_wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 1420px;
     margin: 0 auto;
+    gap: 42px;
+}
+
+.best_card{
+    width: 404px;
     border-radius: 8px;
     background: #FFF;
     box-shadow: 0px 6px 12px 0px rgba(10, 28, 45, 0.08);
@@ -35,6 +52,8 @@ export default {
 .best_card_head img{
     width: 100%;
     border-radius: 8px;
+    height: 404px;
+    object-fit: cover;
     overflow: hidden;
 }
 

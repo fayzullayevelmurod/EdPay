@@ -8,6 +8,7 @@
             :class="`${isValue ? 'error' : ''} ${error ? 'error' : ''} ${hidden_valid ? 'hidden-error' : ''}`" 
             :type="type" 
             @blur="checkValue()"
+            :placeholder="placeholder"
         >
         <textarea 
             v-if="type == 'textarea'"
@@ -16,6 +17,7 @@
             :class="`${isValue ? 'error' : ''} ${error ? 'error' : ''} ${hidden_valid ? 'hidden-error' : ''}`" 
             :type="type" 
             @blur="checkValue()"
+            :placeholder="placeholder"
         ></textarea>
         <input
             v-if="type === 'phone'"
@@ -24,6 +26,7 @@
             data-maska="+7(###)###-##-##"
             @blur="checkValue()"
             @maska="updateValue()"
+            :placeholder="placeholder"
             :class="`${isValue ? 'error' : ''} ${error ? 'error' : ''} ${hidden_valid ? 'hidden-error' : ''}`" 
         />
         <input
@@ -35,6 +38,7 @@
             data-maska-reversed
             @maska="updateValue()"
             @blur="checkValue()"
+            :placeholder="placeholder"
             :class="`${isValue ? 'error' : ''} ${error ? 'error' : ''} ${hidden_valid ? 'hidden-error' : ''}`" 
         >
         <span :class="`${!isValue ? 'hidden' : ''} ${error ? 'error' : ''}`">{{error_title}}</span>
@@ -70,19 +74,23 @@ export default {
         error: {
             type: Boolean,
             defaul: false,
+        },
+        placeholder: {
+            type: String,
+            defaul: ''
         }
     },
     emits: ['update:value', 'check_value'],
     data () {
         return {
-            maskedValue: '',
+            maskedValue: this.value,
             bindedObject: {
                 masked: "",
                 unmasked: "",
                 completed: false,
             },
             isValue: false,
-            default_value: '',
+            default_value: this.value,
         }
     },
     methods: {
@@ -158,6 +166,10 @@ export default {
     border: none;
     outline: none;
     border: 1px solid transparent;
+}
+
+.input_wrapper input::placeholder {
+    color: #BEC1C5;
 }
 
 .input_wrapper textarea {

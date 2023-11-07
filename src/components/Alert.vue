@@ -70,4 +70,9 @@ export default {
     font-weight: 600;
     line-height: 16px;
 }
+
+.alert_wrapper div a {
+    color: #F47421;
+    font-weight: 600;
+}
 </style>

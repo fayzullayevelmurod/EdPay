@@ -1,5 +1,5 @@
 <template>
-  <header>
+  <header v-if="!$store.state.landing_show">
     <div class="header_container">
         <router-link to="/" class="header_logo">
             <img src="../assets/images/header_logo.svg" alt="">
@@ -9,10 +9,10 @@
                 v-for="(item, i) in menus" 
                 :key="i" 
                 :to="{name: item.to}" 
-                :class="`nav_link ${item.name === $route.name ? 'active' : ''}`"
+                :class="`nav_link ${item.name == active_page ? 'active' : ''}`"
                 @click="active_page = item.name"
             >
-                {{item.name}}
+               {{ $route.name }} {{item.name}}
             </router-link>
         </nav>
         <button class="header_btn">
@@ -30,7 +30,7 @@ export default {
     name: "Header",
     data () {
         return {
-            active_page: 'Home',
+            active_page: 'Главная',
             menus: [
                 {to: 'Home', name: 'Главная'},
                 {to: 'Home', name: 'Подписки'},
