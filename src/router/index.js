@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
 import CreateLanding from '../views/CreateLanding.vue'
 import DefaultHome from "../components/DefaultHome.vue"
+import BestSchool from '../views/BestSchool.vue'
 
 const routes = [
   {
@@ -18,7 +19,14 @@ const routes = [
     path: '/email',
     name: 'Email',
     component: function () {
-      return import(/* webpackChunkName: "about" */ '../views/Email.vue')
+      return import('../views/Email.vue')
+    }
+  },
+  {
+    path: '/bestschool',
+    name: 'BestSchool',
+    component: function () {
+      return import('../views/BestSchool.vue')
     }
   },
 ]
