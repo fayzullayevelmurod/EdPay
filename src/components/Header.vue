@@ -49,17 +49,20 @@ header{
     filter: drop-shadow(0px 6px 12px rgba(10, 28, 45, 0.08));
     background: var(--conditional-header-background, #FFF);
 }
-.header_container{
+
+.header_container {
     display: flex;
     align-items: center;
     justify-content: space-between;
 }
+
 .menu {
     display: flex;
     align-items: center;
     gap: 40px;
 }
-.nav_link{
+
+.nav_link {
     color: #202224;
     font-family: 'Roboto',sans-serif;
     font-size: 14px;
@@ -68,12 +71,14 @@ header{
     line-height: 20px;
     transition: .2s ease;
 }
-.nav_link.active{
+
+.nav_link.active {
     color: #F47421;
     font-weight: 600;
     line-height: 18px;
 }
-.header_btn{
+
+.header_btn {
     display: flex;
     align-items: center;
     gap: 24px;
@@ -90,7 +95,8 @@ header{
     line-height: 24px;
     transition: .2s ease;
 }
-.header_btn:hover{
+
+.header_btn:hover {
     border: 1px solid var(--neutral-5, #D9D9D9);
     background: var(--neutral-1, #FFF);
     box-shadow: 0px 4px 4px 0px rgba(32, 34, 36, 0.12);
