@@ -26,5 +26,10 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: .2s ease all;
+}
+
+.remove-button:hover {
+    box-shadow: 0px 4px 4px 0px rgba(32, 34, 36, 0.12);
 }
 </style>

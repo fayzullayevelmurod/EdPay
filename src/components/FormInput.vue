@@ -1,6 +1,6 @@
 <template>
     <div class="input_wrapper">
-        <label>{{label}}</label>
+        <label v-html="label"></label>
         <input
             v-if="type !== 'phone' && type != 'textarea' && type != 'money'"
             v-model="default_value"
@@ -37,7 +37,7 @@
             @blur="checkValue()"
             :class="`${isValue ? 'error' : ''} ${error ? 'error' : ''} ${hidden_valid ? 'hidden-error' : ''}`" 
         >
-        <span :class="!isValue ? 'hidden' : ''">{{error_title}}</span>
+        <span :class="`${!isValue ? 'hidden' : ''} ${error ? 'error' : ''}`">{{error_title}}</span>
     </div>
 </template>
 
@@ -50,7 +50,7 @@ export default {
     props: {
         idx: String,
         field_name: String,
-        value: String,
+        value: [String, Number],
         hidden_valid: {
             type: Boolean,
             defaul: false,
@@ -85,11 +85,6 @@ export default {
             default_value: '',
         }
     },
-    watch: {
-        value () {
-            this.checkValue();
-        }
-    },
     methods: {
         checkValue () {
             if (this.default_value.length) {
@@ -106,8 +101,19 @@ export default {
                     this.$emit('check_value', this.idx, this.field_name, false);
                 }
             } else {
-                this.isValue = true;
-                this.$emit('check_value', this.idx, this.field_name, true);
+                if (typeof this.default_value == 'number') {
+                    if (!String(this.default_value).length) {
+                        this.isValue = true;
+                        this.$emit('check_value', this.idx, this.field_name, true);
+                    }
+                    if (String(this.default_value).length == 1) {
+                        this.isValue = false;
+                        this.$emit('check_value', this.idx, this.field_name, false);
+                    }
+                } else {
+                    this.isValue = true;
+                    this.$emit('check_value', this.idx, this.field_name, true);
+                }
             }
         },
         updateValue () {
@@ -193,5 +199,10 @@ export default {
 
 .input_wrapper span.hidden {
     opacity: 0;
+}
+
+.input_wrapper span.error {
+    opacity: 1 !important;
+    display: block !important;
 }
 </style>

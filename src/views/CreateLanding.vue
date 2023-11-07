@@ -1,6 +1,6 @@
 <template>
     <div> 
-        <create-landing-head :current_step="current_step" :error="step_error"/>
+        <create-landing-head v-if="current_step < 6" :current_step="current_step" :error="step_error"/>
         
         <!-- Step 1 -->
         <div :class="`step_1 step ${current_step == 1 || current_step == 1.5 ? '' : 'hidden'}`">
@@ -205,175 +205,197 @@
                     field_name="inn"
                     v-model:value="step_fields['4'].inn"
                     @check_value="checkInputValue"
-                    type="text" 
+                    type="number" 
                     label="ИНН:"
                     error_title="*ИНН не найден"
+                    :error="error_fields['4'].inn"
                 />
-                <form-title :error="error_fields['4'].bank" title="2. Вывод средств:"/>
-                <form-input
-                    idx="4"
-                    field_name="bank"
-                    v-model:value="step_fields['4'].bank"
-                    @check_value="checkInputValue"
-                    type="text" 
-                    label="БИК банка:"
-                    error_title="*БИК банка не найден"
-                />
-                <form-input
-                    idx="4"
-                    field_name="number"
-                    v-model:value="step_fields['4'].number"
-                    @check_value="checkInputValue"
-                    type="text" 
-                    label="Номер р/с:"
-                    error_title="*Поле не заполнено"
-                />
-                <form-input
-                    idx="4"
-                    field_name="recipient"
-                    v-model:value="step_fields['4'].recipient"
-                    @check_value="checkInputValue"
-                    type="text" 
-                    label="Получатель:"
-                    error_title="*Поле не заполнено"
-                />
+                <div v-if="user_data_inn" class="bank_user_data">
+                    <div>
+                        <div class="title">ОГРН/ОГРНИП</div>
+                        <div class="value">2534216162542534862`53486`524386`15438`61534</div>
+                    </div>
+                    <div>
+                        <div class="title">Наименование (для внутренних нужд сервиса, его не увидят клиенты)</div>
+                        <div class="value">ИП Петров В.К.</div>
+                    </div>
+                </div>
+                <form-title :error="bank_card_datas" title="2. Вывод средств:"/>
+                <div class="inputs">
+                    <form-input
+                        idx="4"
+                        field_name="bank_bic"
+                        v-model:value="step_fields['4'].bank_bic"
+                        @check_value="checkInputValue"
+                        type="number" 
+                        label="БИК банка:"
+                        error_title="*БИК банка не найден"
+                        :error="error_fields['4'].bank_bic"
+                    />
+                    
+                    <!-- Bank name -->
+                    <div v-if="check_bank_name" class="bank_user_data">
+                        <div>
+                            <div class="title">Название банка</div>
+                            <div class="value">ПАО Сбербанк</div>
+                        </div>
+                    </div>
+                    
+                    <form-input
+                        idx="4"
+                        field_name="account_number"
+                        v-model:value="step_fields['4'].account_number"
+                        @check_value="checkInputValue"
+                        type="number" 
+                        label="Номер р/с:"
+                        error_title="*Поле не заполнено"
+                        :error="error_fields['4'].account_number"
+                    />
+                    <form-input
+                        idx="4"
+                        field_name="recipient"
+                        v-model:value="step_fields['4'].recipient"
+                        @check_value="checkInputValue"
+                        type="text" 
+                        label="Получатель:"
+                        error_title="*Поле не заполнено"
+                        :error="error_fields['4'].recipient"
+                    />
+                </div>
             </div>
+            <div class="foot_line"></div>
         </div>
 
         <!-- Step 5 -->
-        <div :class="`step_5 step ${current_step == 5 || current_step == 5 ? '' : 'hidden'}`">
+        <div :class="`step_5 step ${current_step == 5 || current_step == 5.5 ? '' : 'hidden'}`">
             <div class="landing_container">
-                <form-title :error="error_fields['4'].inn" title="1. Реквизиты:"/>
-                <form-input
-                    idx="4"
-                    field_name="inn"
-                    v-model:value="step_fields['4'].inn"
-                    @check_value="checkInputValue"
-                    type="text" 
-                    label="ИНН:"
-                    error_title="*ИНН не найден"
-                />
-                <form-title :error="error_fields['4'].bank" title="2. Вывод средств:"/>
-                <form-input
-                    idx="4"
-                    field_name="bank"
-                    v-model:value="step_fields['4'].bank"
-                    @check_value="checkInputValue"
-                    type="text" 
-                    label="БИК банка:"
-                    error_title="*БИК банка не найден"
-                />
-                <form-input
-                    idx="4"
-                    field_name="number"
-                    v-model:value="step_fields['4'].number"
-                    @check_value="checkInputValue"
-                    type="text" 
-                    label="Номер р/с:"
-                    error_title="*Поле не заполнено"
-                />
-                <form-input
-                    idx="4"
-                    field_name="recipient"
-                    v-model:value="step_fields['4'].recipient"
-                    @check_value="checkInputValue"
-                    type="text" 
-                    label="Получатель:"
-                    error_title="*Поле не заполнено"
-                />
+                <form-title :error="error_fields['5']" title="1. Документы:"/>
+                <h4>Приложите фото или сканы следующих документов:</h4>
+                <div :class="`step_block ${i == 4 ? 'last_child' : ''}`" v-for="i in 4" :key="i">Документ {{i}};</div>
+                <div class="select_file">
+                    <img src="@/assets/images/file_icon.svg" alt="" class="file_icon">
+                    <p>Допустимые форматы: gif, jpg, jpeg, png, bmp, tif, tiff, pdf, doc, docx, txt, xls, xlsx<br> Размер одного файла не должен превышать 3 Mb</p>
+                    <input type="file" @change="selectFile" class="select_file_input">
+                    <Button title="Выбрать файл" @clicked="openSelectFile()"/>
+                </div>
+                <div v-if="error_fields['5']" class="error_text">*Прикрепите документы</div>
+                <h3 v-if="step_fields['5'].length" class="uploaded_title">Загруженные документы:</h3>
+                <div v-if="step_fields['5'].length" class="upload_documents_wrapper">
+                    <div :class="`uploaded_documents ${step_fields['5'].length - 1 != idx ? 'border-bottom' : ''}`" v-for="(file, idx) in step_fields[5]" :key="idx">
+                        <div class="uploaded_block">
+                            <div class="block_left">
+                                <img :src="getfileLink(file)" alt="">
+                                <div>
+                                    <h5>{{file.name}}</h5>
+                                    <h6>{{getFileSize(file.size)}}</h6>
+                                </div>
+                            </div>
+                            <button-remove @clicked="removeFile(idx)" />
+                        </div>
+                    </div>
+                </div>
             </div>
+            <div class="foot_line"></div>
         </div>
 
         <!-- Step 6 -->
-        <div :class="`step_5 step ${current_step == 5 || current_step == 5.5 ? '' : 'hidden'}`">
-            <div class="landing_container">
-                <form-title :error="error_fields['4'].inn" title="1. Документы:"/>
-                <h4>Приложите фото или сканы следующих документов:</h4>
-                <div class="step_block">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" viewBox="0 0 6 6" fill="none">
-                    <circle cx="3" cy="3" r="3" fill="#F47421"/>
-                    </svg>
-                    <span>Документ 1;</span>
-                </div>
-                <div class="step_block">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" viewBox="0 0 6 6" fill="none">
-                    <circle cx="3" cy="3" r="3" fill="#F47421"/>
-                    </svg>
-                    <span>Документ 2;</span>
-                </div>
-                <div class="step_block">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" viewBox="0 0 6 6" fill="none">
-                    <circle cx="3" cy="3" r="3" fill="#F47421"/>
-                    </svg>
-                    <span>Документ 3;</span>
-                </div>
-                <div class="step_block">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" viewBox="0 0 6 6" fill="none">
-                    <circle cx="3" cy="3" r="3" fill="#F47421"/>
-                    </svg>
-                    <span>Документ 4;</span>
-                </div>
-                <div class="select_file">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="63" height="63" viewBox="0 0 63 63" fill="none">
-                        <path d="M53.3775 13.0759L41.5129 1.85136C40.251 0.657439 38.5992 0 36.862 0H14.2734C10.5418 0 7.50586 3.03594 7.50586 6.76758V56.2324C7.50586 59.9641 10.5418 63 14.2734 63H48.7266C52.4582 63 55.4941 59.9641 55.4941 56.2324V17.9922C55.4941 16.1404 54.7226 14.3485 53.3775 13.0759ZM49.7923 14.7656H40.6055C40.2662 14.7656 39.9902 14.4896 39.9902 14.1504V5.49232L49.7923 14.7656ZM48.7266 59.3086H14.2734C12.5772 59.3086 11.1973 57.9286 11.1973 56.2324V6.76758C11.1973 5.07138 12.5772 3.69141 14.2734 3.69141H36.2988V14.1504C36.2988 16.5251 38.2308 18.457 40.6055 18.457H51.8027V56.2324C51.8027 57.9286 50.4228 59.3086 48.7266 59.3086Z" fill="#7F848A"/>
-                        <path d="M44.666 24.6094H17.5957C16.5764 24.6094 15.75 25.4358 15.75 26.4551C15.75 27.4744 16.5764 28.3008 17.5957 28.3008H44.666C45.6853 28.3008 46.5117 27.4744 46.5117 26.4551C46.5117 25.4358 45.6853 24.6094 44.666 24.6094Z" fill="#7F848A"/>
-                        <path d="M44.666 34.4531H17.5957C16.5764 34.4531 15.75 35.2795 15.75 36.2988C15.75 37.3181 16.5764 38.1445 17.5957 38.1445H44.666C45.6853 38.1445 46.5117 37.3181 46.5117 36.2988C46.5117 35.2795 45.6853 34.4531 44.666 34.4531Z" fill="#7F848A"/>
-                        <path d="M26.5437 44.2969H17.5957C16.5764 44.2969 15.75 45.1233 15.75 46.1426C15.75 47.1619 16.5764 47.9883 17.5957 47.9883H26.5437C27.563 47.9883 28.3894 47.1619 28.3894 46.1426C28.3894 45.1233 27.563 44.2969 26.5437 44.2969Z" fill="#7F848A"/>
-                    </svg>
-                    <p>Допустимые форматы: gif, jpg, jpeg, png, bmp, tif, tiff, pdf, doc, docx, txt, xls, xlsx<br>
-                    Размер одного файла не должен превышать 3 Mb
-                    </p>
-                    <Button
-                        title="Выбрать файл"
-                        :disabled="check_field"
-                        @clicked="SaveDatas()"
-                    />
-                </div>
-                <h3 class="uploaded_title">Загруженные документы:</h3>
-                <div class="uploaded_documents">
-                    <div class="uploaded_block">
-                        <img src="../assets/images/upload.png" alt="">
-                        <div>
-                            <h5>dhcdvs6457257.jpg </h5>
-                            <h6>(2Mb)</h6>
+        <div :class="`step_6 step ${current_step == 6 || current_step == 6.5 ? '' : 'hidden'}`">
+            <div class="container">
+                <div class="title">Создание лендинга</div>
+                <Alert type="blue">
+                    <div>Так лендинг будут видеть Ваши клиенты, проверьте его перед публикацией.</div>
+                </Alert>
+                <div class="title title_2">Оформление заказа</div>
+                <div class="card_calculation">
+                    <div class="calculation_left">
+                        <img src="@/assets/images/library_image_3.png" alt="">
+                        <div class="name">Как стать дизайнером</div>
+                    </div>
+                    <div class="calculation_right">
+                        <div class="money">
+                            <div class="money_title">Цена:</div>
+                            <div class="money_amount">{{step_fields['6'].amount}} ₽/шт</div>
                         </div>
-                        <div class="upload_btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                            <path d="M12.668 4.66675C12.4912 4.66675 12.3216 4.73699 12.1966 4.86201C12.0715 4.98703 12.0013 5.1566 12.0013 5.33341V12.7941C11.9822 13.1312 11.8306 13.4471 11.5796 13.673C11.3286 13.8989 10.9986 14.0165 10.6613 14.0001H5.3413C5.00403 14.0165 4.67396 13.8989 4.42297 13.673C4.17199 13.4471 4.02043 13.1312 4.0013 12.7941V5.33341C4.0013 5.1566 3.93106 4.98703 3.80604 4.86201C3.68102 4.73699 3.51145 4.66675 3.33464 4.66675C3.15782 4.66675 2.98826 4.73699 2.86323 4.86201C2.73821 4.98703 2.66797 5.1566 2.66797 5.33341V12.7941C2.687 13.4849 2.97902 14.14 3.48009 14.616C3.98115 15.0919 4.65042 15.3499 5.3413 15.3334H10.6613C11.3522 15.3499 12.0215 15.0919 12.5225 14.616C13.0236 14.14 13.3156 13.4849 13.3346 12.7941V5.33341C13.3346 5.1566 13.2644 4.98703 13.1394 4.86201C13.0143 4.73699 12.8448 4.66675 12.668 4.66675Z" fill="black"/>
-                            <path d="M13.3333 2.66675H10.6667V1.33341C10.6667 1.1566 10.5964 0.987034 10.4714 0.86201C10.3464 0.736986 10.1768 0.666748 10 0.666748H6C5.82319 0.666748 5.65362 0.736986 5.5286 0.86201C5.40357 0.987034 5.33333 1.1566 5.33333 1.33341V2.66675H2.66667C2.48986 2.66675 2.32029 2.73699 2.19526 2.86201C2.07024 2.98703 2 3.1566 2 3.33341C2 3.51023 2.07024 3.6798 2.19526 3.80482C2.32029 3.92984 2.48986 4.00008 2.66667 4.00008H13.3333C13.5101 4.00008 13.6797 3.92984 13.8047 3.80482C13.9298 3.6798 14 3.51023 14 3.33341C14 3.1566 13.9298 2.98703 13.8047 2.86201C13.6797 2.73699 13.5101 2.66675 13.3333 2.66675ZM6.66667 2.66675V2.00008H9.33333V2.66675H6.66667Z" fill="black"/>
-                            <path d="M7.33333 11.3333V6.66667C7.33333 6.48986 7.2631 6.32029 7.13807 6.19526C7.01305 6.07024 6.84348 6 6.66667 6C6.48986 6 6.32029 6.07024 6.19526 6.19526C6.07024 6.32029 6 6.48986 6 6.66667V11.3333C6 11.5101 6.07024 11.6797 6.19526 11.8047C6.32029 11.9298 6.48986 12 6.66667 12C6.84348 12 7.01305 11.9298 7.13807 11.8047C7.2631 11.6797 7.33333 11.5101 7.33333 11.3333Z" fill="black"/>
-                            <path d="M10.0013 11.3333V6.66667C10.0013 6.48986 9.93106 6.32029 9.80604 6.19526C9.68102 6.07024 9.51145 6 9.33464 6C9.15782 6 8.98826 6.07024 8.86323 6.19526C8.73821 6.32029 8.66797 6.48986 8.66797 6.66667V11.3333C8.66797 11.5101 8.73821 11.6797 8.86323 11.8047C8.98826 11.9298 9.15782 12 9.33464 12C9.51145 12 9.68102 11.9298 9.80604 11.8047C9.93106 11.6797 10.0013 11.5101 10.0013 11.3333Z" fill="black"/>
-                            </svg>
+                        <div class="calculation_input">
+                            <button @click="calculationAmount(false)" :class="`minus ${step_fields['6'].count === 1 ? 'disabled' : ''}`">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M1.57031 7.32227H14.4275C14.506 7.32227 14.5703 7.38655 14.5703 7.46512V8.53655C14.5703 8.61512 14.506 8.67941 14.4275 8.67941H1.57031C1.49174 8.67941 1.42745 8.61512 1.42745 8.53655V7.46512C1.42745 7.38655 1.49174 7.32227 1.57031 7.32227Z" fill="#A1ABB6"/>
+                                </svg>
+                            </button>
+                            <input type="number" v-model="step_fields['6'].count">
+                            <button @click="calculationAmount(true)" class="plus">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
+                                    <path d="M8.53753 1.57227H7.4661C7.37086 1.57227 7.32324 1.61988 7.32324 1.71512V7.32227H2.00223C1.90699 7.32227 1.85938 7.36988 1.85938 7.46512V8.53655C1.85938 8.63179 1.90699 8.67941 2.00223 8.67941H7.32324V14.2866C7.32324 14.3818 7.37086 14.4294 7.4661 14.4294H8.53753C8.63277 14.4294 8.68039 14.3818 8.68039 14.2866V8.67941H14.0022C14.0975 8.67941 14.1451 8.63179 14.1451 8.53655V7.46512C14.1451 7.36988 14.0975 7.32227 14.0022 7.32227H8.68039V1.71512C8.68039 1.61988 8.63277 1.57227 8.53753 1.57227Z" fill="#202224"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="money">
+                            <div class="money_title">Итого:</div>
+                            <div class="money_amount">{{step_fields['6'].all_amount}} ₽</div>
                         </div>
                     </div>
-                    <div class="uploaded_block">
-                        <img src="../assets/images/upload.png" alt="">
-                        <div>
-                            <h5>dhcdvs6457257.jpg </h5>
-                            <h6>(2Mb)</h6>
+                </div>
+                <div class="calculation_form">
+                    <form-title title="1. Способы оплаты" />
+                    <div class="subtitle">Выберите способ оплаты:</div>
+                    <div class="form_cards">
+                        <div
+                            @click="addPayment2(pay.name)" 
+                            :class="`card_item ${step_fields['6']['payment'] && step_fields['6']['payment'].includes(pay.name) ? 'selected' : ''}`" 
+                            v-for="(pay, index) in payment_methods" 
+                            :key="index"
+                        >
+                            <div class="text_wrapper">
+                                <div class="img">
+                                    <img v-if="step_fields['6']['payment'] && step_fields['6']['payment'].includes(pay.name)" src="@/assets/images/checkbox_icon.svg" alt="">
+                                </div>
+                                <span>{{pay.name}}</span>
+                            </div>
+                            <img :src="require(`@/assets/images/payment_card_${index+1}.svg`)" alt="">
                         </div>
-                        <div class="upload_btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                            <path d="M12.668 4.66675C12.4912 4.66675 12.3216 4.73699 12.1966 4.86201C12.0715 4.98703 12.0013 5.1566 12.0013 5.33341V12.7941C11.9822 13.1312 11.8306 13.4471 11.5796 13.673C11.3286 13.8989 10.9986 14.0165 10.6613 14.0001H5.3413C5.00403 14.0165 4.67396 13.8989 4.42297 13.673C4.17199 13.4471 4.02043 13.1312 4.0013 12.7941V5.33341C4.0013 5.1566 3.93106 4.98703 3.80604 4.86201C3.68102 4.73699 3.51145 4.66675 3.33464 4.66675C3.15782 4.66675 2.98826 4.73699 2.86323 4.86201C2.73821 4.98703 2.66797 5.1566 2.66797 5.33341V12.7941C2.687 13.4849 2.97902 14.14 3.48009 14.616C3.98115 15.0919 4.65042 15.3499 5.3413 15.3334H10.6613C11.3522 15.3499 12.0215 15.0919 12.5225 14.616C13.0236 14.14 13.3156 13.4849 13.3346 12.7941V5.33341C13.3346 5.1566 13.2644 4.98703 13.1394 4.86201C13.0143 4.73699 12.8448 4.66675 12.668 4.66675Z" fill="black"/>
-                            <path d="M13.3333 2.66675H10.6667V1.33341C10.6667 1.1566 10.5964 0.987034 10.4714 0.86201C10.3464 0.736986 10.1768 0.666748 10 0.666748H6C5.82319 0.666748 5.65362 0.736986 5.5286 0.86201C5.40357 0.987034 5.33333 1.1566 5.33333 1.33341V2.66675H2.66667C2.48986 2.66675 2.32029 2.73699 2.19526 2.86201C2.07024 2.98703 2 3.1566 2 3.33341C2 3.51023 2.07024 3.6798 2.19526 3.80482C2.32029 3.92984 2.48986 4.00008 2.66667 4.00008H13.3333C13.5101 4.00008 13.6797 3.92984 13.8047 3.80482C13.9298 3.6798 14 3.51023 14 3.33341C14 3.1566 13.9298 2.98703 13.8047 2.86201C13.6797 2.73699 13.5101 2.66675 13.3333 2.66675ZM6.66667 2.66675V2.00008H9.33333V2.66675H6.66667Z" fill="black"/>
-                            <path d="M7.33333 11.3333V6.66667C7.33333 6.48986 7.2631 6.32029 7.13807 6.19526C7.01305 6.07024 6.84348 6 6.66667 6C6.48986 6 6.32029 6.07024 6.19526 6.19526C6.07024 6.32029 6 6.48986 6 6.66667V11.3333C6 11.5101 6.07024 11.6797 6.19526 11.8047C6.32029 11.9298 6.48986 12 6.66667 12C6.84348 12 7.01305 11.9298 7.13807 11.8047C7.2631 11.6797 7.33333 11.5101 7.33333 11.3333Z" fill="black"/>
-                            <path d="M10.0013 11.3333V6.66667C10.0013 6.48986 9.93106 6.32029 9.80604 6.19526C9.68102 6.07024 9.51145 6 9.33464 6C9.15782 6 8.98826 6.07024 8.86323 6.19526C8.73821 6.32029 8.66797 6.48986 8.66797 6.66667V11.3333C8.66797 11.5101 8.73821 11.6797 8.86323 11.8047C8.98826 11.9298 9.15782 12 9.33464 12C9.51145 12 9.68102 11.9298 9.80604 11.8047C9.93106 11.6797 10.0013 11.5101 10.0013 11.3333Z" fill="black"/>
-                            </svg>
-                        </div>
+                        <div v-if="error_fields['6'].payment" class="error_text">*Выберите способ оплаты</div>
                     </div>
-                    <div class="uploaded_block">
-                        <img src="../assets/images/upload.png" alt="">
-                        <div>
-                            <h5>dhcdvs6457257.jpg </h5>
-                            <h6>(2Mb)</h6>
+                    <form-title title="2. Контактные данные" />
+                    <div class="calculation_form_wrapper">
+                        <div class="calculation_form_inputs">
+                            <form-input
+                                idx="6"
+                                field_name="phone"
+                                v-model:value="step_fields['6'].phone"
+                                @check_value="checkInputValue"
+                                type="phone" 
+                                label="<span>*</span>Телефон:"
+                                error_title="*Поле не заполнено"
+                                :error="error_fields['6'].phone"
+                            />
+                            <form-input
+                                idx="6"
+                                field_name="email"
+                                v-model:value="step_fields['6'].email"
+                                @check_value="checkInputValue"
+                                type="email" 
+                                label="<span>*</span>E-mail :"
+                                error_title="*Поле заполнено некорректно"
+                                :error="error_fields['6'].email"
+                            />
                         </div>
-                        <div class="upload_btn">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
-                            <path d="M12.668 4.66675C12.4912 4.66675 12.3216 4.73699 12.1966 4.86201C12.0715 4.98703 12.0013 5.1566 12.0013 5.33341V12.7941C11.9822 13.1312 11.8306 13.4471 11.5796 13.673C11.3286 13.8989 10.9986 14.0165 10.6613 14.0001H5.3413C5.00403 14.0165 4.67396 13.8989 4.42297 13.673C4.17199 13.4471 4.02043 13.1312 4.0013 12.7941V5.33341C4.0013 5.1566 3.93106 4.98703 3.80604 4.86201C3.68102 4.73699 3.51145 4.66675 3.33464 4.66675C3.15782 4.66675 2.98826 4.73699 2.86323 4.86201C2.73821 4.98703 2.66797 5.1566 2.66797 5.33341V12.7941C2.687 13.4849 2.97902 14.14 3.48009 14.616C3.98115 15.0919 4.65042 15.3499 5.3413 15.3334H10.6613C11.3522 15.3499 12.0215 15.0919 12.5225 14.616C13.0236 14.14 13.3156 13.4849 13.3346 12.7941V5.33341C13.3346 5.1566 13.2644 4.98703 13.1394 4.86201C13.0143 4.73699 12.8448 4.66675 12.668 4.66675Z" fill="black"/>
-                            <path d="M13.3333 2.66675H10.6667V1.33341C10.6667 1.1566 10.5964 0.987034 10.4714 0.86201C10.3464 0.736986 10.1768 0.666748 10 0.666748H6C5.82319 0.666748 5.65362 0.736986 5.5286 0.86201C5.40357 0.987034 5.33333 1.1566 5.33333 1.33341V2.66675H2.66667C2.48986 2.66675 2.32029 2.73699 2.19526 2.86201C2.07024 2.98703 2 3.1566 2 3.33341C2 3.51023 2.07024 3.6798 2.19526 3.80482C2.32029 3.92984 2.48986 4.00008 2.66667 4.00008H13.3333C13.5101 4.00008 13.6797 3.92984 13.8047 3.80482C13.9298 3.6798 14 3.51023 14 3.33341C14 3.1566 13.9298 2.98703 13.8047 2.86201C13.6797 2.73699 13.5101 2.66675 13.3333 2.66675ZM6.66667 2.66675V2.00008H9.33333V2.66675H6.66667Z" fill="black"/>
-                            <path d="M7.33333 11.3333V6.66667C7.33333 6.48986 7.2631 6.32029 7.13807 6.19526C7.01305 6.07024 6.84348 6 6.66667 6C6.48986 6 6.32029 6.07024 6.19526 6.19526C6.07024 6.32029 6 6.48986 6 6.66667V11.3333C6 11.5101 6.07024 11.6797 6.19526 11.8047C6.32029 11.9298 6.48986 12 6.66667 12C6.84348 12 7.01305 11.9298 7.13807 11.8047C7.2631 11.6797 7.33333 11.5101 7.33333 11.3333Z" fill="black"/>
-                            <path d="M10.0013 11.3333V6.66667C10.0013 6.48986 9.93106 6.32029 9.80604 6.19526C9.68102 6.07024 9.51145 6 9.33464 6C9.15782 6 8.98826 6.07024 8.86323 6.19526C8.73821 6.32029 8.66797 6.48986 8.66797 6.66667V11.3333C8.66797 11.5101 8.73821 11.6797 8.86323 11.8047C8.98826 11.9298 9.15782 12 9.33464 12C9.51145 12 9.68102 11.9298 9.80604 11.8047C9.93106 11.6797 10.0013 11.5101 10.0013 11.3333Z" fill="black"/>
-                            </svg>
+                        <form-input
+                            idx="6"
+                            field_name="comment"
+                            v-model:value="step_fields['6'].comment"
+                            @check_value="checkInputValue"
+                            type="textarea" 
+                            label="Комментарий:"
+                            error_title="*Превышено допустимое количество символов"
+                            :error="error_fields['6'].comment"
+                        />
+                    </div>
+                    <img src="@/assets/images/calculation_line.svg" alt="" class="line">
+                    <div class="form_card_foot">
+                        <Button title="Оплатить"/>
+                        <div class="foot_text">
+                            <div class="name">Всего к оплате:</div>
+                            <div class="value">9 999.99 ₽</div>
                         </div>
                     </div>
                 </div>
@@ -381,10 +403,17 @@
         </div>
 
         <div class="steps_foot">
+            <div v-if="current_step == 6" class="foot_container foot_container_1">
+                <Checkbox v-model:value="step_fields['6'].agree" title="Нажимая кнопку и отправляя данные формы, Вы даёте <a href='#'>согласие на обработку персональных данных</a> и соглашаетесь с <a href='#'>политикой конфиденциальности</a>"/>
+                <Alert type="coral">
+                    <div>Перед публикацией вся информация проходит модерацию</div>
+                    <div>Проверка может занять до трех дней (но мы стараемся успеть за день). После проверки на почту <span>school@yandex.ru</span> придет уведомление, прошел лендинг модерацию или нет.</div>
+                </Alert>
+            </div>
             <div class="foot_container">
                 <button class="back_btn">Отмена</button>
                 <div class="buttons">
-                    <Button v-if="current_step == 3 || current_step == 3.5" :light="true" title="Предпросмотр лендинга"/>
+                    <Button v-if="current_step == 3 || current_step == 3.5 || current_step == 4 || current_step == 4.5 || current_step == 5" :light="true" title="Предпросмотр лендинга"/>
                     <Button
                         title="Продолжить"
                         :disabled="check_field"
@@ -397,36 +426,11 @@
 </template>
 
 <script>
-import CreateLandingHead from '@/components/CreateLandingHead.vue';
-import FormTitle from '@/components/FormTitle.vue';
-import FileUpload from '@/components/FileUpload.vue';
-import FormInput from '@/components/FormInput.vue';
-import Button from '@/components/Button.vue';
-import ButtonRemove from '@/components/ButtonRemove.vue';
-import ButtonAdd from '@/components/ButtonAdd.vue';
-import ButtonBack from '@/components/ButtonBack.vue'
-import Checkbox from '@/components/Checkbox.vue';
-import ModalStyle from '@/components/ModalStyle.vue';
-import SwitchCheckbox from '@/components/SwitchCheckbox.vue'
-
 export default {
     name: "CreateLanding",
-    components: {
-        CreateLandingHead,
-        FormTitle,
-        FileUpload,
-        FormInput,
-        Button,
-        ButtonRemove,
-        ButtonAdd,
-        Checkbox,
-        ModalStyle,
-        ButtonBack,
-        SwitchCheckbox,
-    },
     data () {
         return {
-            current_step: 5,
+            current_step: 6,
             step_fields: {
                 '1': {},
                 '2': {
@@ -437,7 +441,15 @@ export default {
                     {name: "E-mail", value: false, mandatory: false},
                     {name: "Комментарии", value: false, mandatory: false},
                 ],
-                '4': {}
+                '4': {},
+                '5': [],
+                '6': {
+                    amount: 9999.99,
+                    count: 1,
+                    all_amount: 9999.99,
+                    payment: [],
+                    agree: false,
+                }
             },
             error_fields: {
                 '1': {
@@ -459,7 +471,17 @@ export default {
                 '3': false,
                 '4': {
                     inn: false,
+                    bank_bic: false,
+                    account_number: false,
+                    recipient: false
                 },
+                '5': false,
+                '6': {
+                    payment: false,
+                    phone: false,
+                    email: false,
+                    comment: false,
+                }
             },
             payment_methods: [
                 {name: "Karta Visa, Mastercard, МИР"},
@@ -512,6 +534,18 @@ export default {
                 }
             } else if (parseInt(this.current_step) == 3) {
                 t = this.error_fields['3']
+            } else if (parseInt(this.current_step) == 4) {
+                let fields = this.step_fields['4'];
+                if (fields.inn && fields.bank_bic && fields.account_number && fields.recipient) {
+                    this.current_step = 4.5;
+                }
+                let errors = this.error_fields['4'];
+                if (errors.inn || this.bank_card_datas) {
+                    t = true;
+                    this.current_step = 4
+                };
+            } else if (parseInt(this.current_step) == 5) {
+                t = this.error_fields['5']
             }
             return t;
         },
@@ -536,6 +570,53 @@ export default {
                 t = false;
             }
             return t;
+        },
+        user_data_inn () {
+            let t = false;
+            if (this.step_fields['4'].inn) {
+                let a = String(this.step_fields['4'].inn);
+
+                if (a.length > 1) {
+                    let firstDigit = a[0];
+                    
+                    for (let i = 1; i < a.length; i++) {
+                        if (a[i] !== firstDigit) {
+                            t = true;
+                            break;
+                        }
+                    }
+                    t ? this.error_fields['4'].inn = false : this.error_fields['4'].inn = true;
+                }
+            }
+
+            return t;
+        },
+        bank_card_datas () {
+            if (this.error_fields['4'].bank_bic || this.error_fields['4'].account_number || this.error_fields['4'].recipient) {
+                return true;
+            }
+
+            return false;
+        },
+        check_bank_name () {
+            let t = false;
+            if (this.step_fields['4'].bank_bic) {
+                let a = String(this.step_fields['4'].bank_bic);
+
+                if (a.length > 1) {
+                    let firstDigit = a[0];
+                    
+                    for (let i = 1; i < a.length; i++) {
+                        if (a[i] !== firstDigit) {
+                            t = true;
+                            break;
+                        }
+                    }
+                    t ? this.error_fields['4'].bank_bic = false : this.error_fields['4'].bank_bic = true;
+                }
+            }
+
+            return t;
         }
     },
     methods: {
@@ -554,8 +635,22 @@ export default {
                     this.current_step = 3;
                 }
             } else if (parseInt(this.current_step) == 3) {
+
+                // Step 3
                 if (this.checkStep3()) {
                     this.current_step = 4;
+                }
+            } else if (parseInt(this.current_step) == 4) {
+
+                // Step 4
+                if (this.checkStep4()) {
+                    this.current_step = 5;
+                }
+            } else if (parseInt(this.current_step) == 5) {
+
+                // Step 5
+                if (this.checkStep5()) {
+                    this.current_step = 6;
                 }
             }
         },
@@ -609,6 +704,14 @@ export default {
                 this.step_fields['2'][key]['payment'].push(payName)
             }
             this.error_fields['2'][key].payment = false;
+        },
+        addPayment2 (payName) {
+            if (this.step_fields['6']['payment'].includes(payName)) {
+                let arr_index = this.step_fields['6']['payment'].indexOf(payName);
+                this.step_fields['6']['payment'].splice(arr_index, 1);
+            } else {
+                this.step_fields['6']['payment'].push(payName)
+            }
         },
         checkStepFields () {
             let field = false;
@@ -673,6 +776,51 @@ export default {
                 return true;
             }
         },
+        checkStep4 () {
+            let t = true;
+            for (const [key, value] of Object.entries(this.error_fields[4])) {
+                if (!this.step_fields['4'][key]) {
+                    t = false;
+                    this.error_fields['4'][key] = true;
+                }
+            }
+            return t;
+        },
+        checkStep5 () {
+            if (!this.step_fields['5'].length) {
+                this.error_fields['5'] = true;
+                return false;
+            }
+            return true;
+        },
+        openSelectFile () {
+            $('.select_file_input').click();
+        },
+        selectFile (e) {
+            this.step_fields['5'].push(e.target.files[0]);
+            this.error_fields['5'] = false;
+        },
+        removeFile (idx) {
+            this.step_fields['5'].splice(idx, 1);
+        },
+        getFileSize (fileSize) {
+            let size = "";
+            fileSize < 1000000 ? size = Math.floor(fileSize/1000) + 'Kb' : size = Math.floor(fileSize/1000000) + 'Mb'
+            return '(' + size + ')';
+        },
+        getfileLink (file) {
+            return URL.createObjectURL(file);
+        },
+        calculationAmount (condination) {
+            if (condination) {
+                this.step_fields['6'].count++;
+            } else {
+                if (this.step_fields['6'].count !== 1) {
+                    this.step_fields['6'].count--;
+                }
+            }
+            this.step_fields['6'].all_amount = this.step_fields['6'].amount * this.step_fields['6'].count;
+        }
     }
 }
 </script>
@@ -689,21 +837,39 @@ export default {
     margin-top: 42px;
 }
 
-.uploaded_documents {
+.upload_documents_wrapper {
+    display: flex;
+    flex-direction: column;
     border-radius: 6px;
     border: 1px solid #F4F3F3;
+}
+
+.uploaded_documents {
     background: #FFF;
 }
 
-.uploaded_block {
+.uploaded_documents.border-bottom {
     border-bottom: 1px solid #F4F3F3;
+}
+
+.uploaded_block {
     padding: 12px 16px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+.uploaded_block .block_left {
+    display: flex;
+    align-items: center;
+    gap: 24px;
 }
 
 .uploaded_block img {
-    margin-right: 24px;
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
 }
 
 .uploaded_block h5 {
@@ -722,27 +888,6 @@ export default {
     font-style: normal;
     font-weight: 600;
     line-height: 18px;
-}
-
-.uploaded_block .upload_btn {
-    margin-left: auto;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 42px;
-    height: 42px;
-    border-radius: 6px;
-    border: 1px solid var(--neutral-5, #D9D9D9);
-    background: var(--neutral-1, #FFF);
-    box-shadow: 0px 2px 0px 0px rgba(0, 0, 0, 0.02);
-    transition: .2s ease;
-}
-
-.uploaded_block .upload_btn:hover {
-    border: 1px solid var(--neutral-5, #D9D9D9);
-    background: var(--neutral-1, #FFF);
-    box-shadow: 0px 4px 4px 0px rgba(32, 34, 36, 0.12);
 }
 
 .select_file {
@@ -770,20 +915,32 @@ export default {
     line-height: 20px;
 }
 
-.step_block{
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-}
-
-.step_block span {
-    color: var(--character-title-85, var(--Primary-Black, #202224));
+.step_block {
+    color: #202224;
     font-family: 'Roboto',sans-serif;
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
+    margin-bottom: 12px;
+    position: relative;
+    padding-left: 14px;
+}
+
+.step_block.last_child {
+    margin-bottom: 24px;
+}
+
+.step_block::before {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    border-radius: 50%;
+    background: #F47421;
 }
 
 .step h4 {
@@ -841,6 +998,19 @@ export default {
     display: flex;
     align-items: center;
     justify-content: space-between;
+}
+
+.steps_foot .foot_container_1 {
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 42px;
+    margin-bottom: 24px;
+    margin-top: 8px;
+}
+
+.steps_foot .foot_container_1 .alert_wrapper {
+    width: 100%;
 }
 
 .steps_foot .buttons {
@@ -909,14 +1079,14 @@ export default {
     width: 268px;
 }
 
-.step_2 .form_cards {
+.form_cards {
     display: flex;
     flex-direction: column;
     gap: 4px;
     width: 331px;
 }
 
-.step_2 .form_cards .card_item {
+.form_cards .card_item {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -927,17 +1097,17 @@ export default {
     cursor: pointer;
 }
 
-.step_2 .form_cards .card_item.selected {
+.form_cards .card_item.selected {
     border: 1px solid #F47421;
 }
 
-.step_2 .form_cards .text_wrapper {
+.form_cards .text_wrapper {
     display: flex;
     align-items: center;
     gap: 8px;
 }
 
-.step_2 .form_cards .text_wrapper span {
+.form_cards .text_wrapper span {
     color: #202224;
     font-family: "Roboto", sans-serif;
     font-size: 14px;
@@ -946,7 +1116,7 @@ export default {
     line-height: 20px;
 }
 
-.step_2 .form_cards .img {
+.form_cards .img {
     width: 16px;
     height: 16px;
     border-radius: 1.5px;
@@ -1117,5 +1287,244 @@ export default {
     font-style: normal;
     font-weight: 400;
     line-height: 22px;
+}
+
+.step_4 .bank_user_data {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.step_4 .bank_user_data .title {
+    color: #7F848A;
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    margin-bottom: 4px;
+}
+
+.step_4 .bank_user_data .value {
+    color: #202224;
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 18px;
+}
+
+.step_4 .inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.step_4 .inputs .hidden {
+    display: none;
+}
+
+.step_4 .foot_line {
+    margin-top: 44px;
+}
+
+.step_5 .foot_line {
+    margin-top: 72px;
+}
+
+.step_5 .select_file_input {
+    display: none;
+}
+
+.step_6 {
+    background: #F4F3F3;
+    padding: 72px 0% 24px;
+}
+
+.step_6 .container {
+    max-width: 1260px;
+    margin: 0 auto;
+}
+
+.step_6 .title {
+    color: #202224;
+    font-family: "Roboto", sans-serif;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 36px;
+    margin-bottom: 42px;
+    text-align: center;
+}
+
+.step_6 .title_2 {
+    text-align: left;
+    margin: 72px 0 42px;
+}
+
+.card_calculation {
+    border-radius: 8px;
+    background: #FFF;
+    box-shadow: 0px 6px 12px 0px rgba(10, 28, 45, 0.08);
+    padding: 14px 47px 14px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+}
+
+.calculation_left {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+}
+
+.calculation_left img {
+    width: 103px;
+    height: 103px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+
+.calculation_left .name {
+    color: #202224;
+    font-family: "Roboto", sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 24px;
+}
+
+.calculation_right {
+    display: flex;
+    align-items: center;
+    gap: 33px;
+}
+
+.calculation_right .money .money_title {
+    color: #7F848A;
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+    margin-bottom: 2px;
+}
+
+.calculation_right .money .money_amount {
+    color: #202224;
+    font-family: "Roboto", sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 24px;
+}
+
+.calculation_input {
+    display: flex;
+    align-items: stretch;
+    height: 42px;
+}
+
+.calculation_input button {
+    width: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #F4F3F3;
+}
+
+.calculation_input button svg path {
+    fill: #000;
+}
+
+.calculation_input button.disabled {
+    cursor: default;
+}
+
+.calculation_input button.disabled svg path {
+    fill: #A1ABB6;
+}
+
+.calculation_input .minus {
+    border-radius: 6px 0px 0px 6px;
+    box-shadow: 0px -1px 0px 0px #D9D9D9 inset, 0px 1px 0px 0px #D9D9D9 inset, 1px 0px 0px 0px #D9D9D9 inset;
+}
+
+.calculation_input .plus {
+    border-radius: 0px 6px 6px 0px;
+    box-shadow: 0px -1px 0px 0px #D9D9D9 inset, 0px 1px 0px 0px #D9D9D9 inset, -1px 0px 0px 0px #D9D9D9 inset;
+}
+
+.calculation_input input {
+    width: 64px;
+    border: 1px solid #D9D9D9;
+    background: #FFF;
+    outline: none;
+    color: #202224;
+    text-align: center;
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: 18px;
+}
+
+.calculation_form {
+    padding: 1px 32px 24px 42px;
+    border-radius: 8px;
+    background: #FFF;
+    box-shadow: 0px 6px 12px 0px rgba(10, 28, 45, 0.08);
+}
+
+.calculation_form_wrapper {
+    max-width: 560px;
+}
+
+.calculation_form_inputs {
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+}
+
+.calculation_form_wrapper .input_wrapper textarea {
+    min-height: 98px;
+    resize: none;
+}
+
+.calculation_form .line {
+    width: 100%;
+    margin-bottom: 24px;
+}
+
+.form_card_foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.form_card_foot .foot_text {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 26px;
+}
+
+.form_card_foot .foot_text .name {
+    color: #7F848A;
+    font-family: "Roboto", sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 20px;
+}
+
+.form_card_foot .foot_text .value {
+    color: #202224;
+    font-family: "Roboto", sans-serif;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 24px;
 }
 </style>

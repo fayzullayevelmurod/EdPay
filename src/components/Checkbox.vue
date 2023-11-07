@@ -4,7 +4,7 @@
             <div class="img">
                 <img :class="!value ? 'hidden' : ''" src="@/assets/images/checkbox_icon.svg" alt="">
             </div>
-            <span>{{title}}</span>
+            <span v-html="title"></span>
         </label>
     </div>
 </template>
@@ -38,6 +38,11 @@ export default {
     font-style: normal;
     font-weight: 400;
     line-height: 20px;
+}
+
+.checkbox_wrapper label span a {
+    color: #F47421;
+    font-weight: 600;
 }
 
 .checkbox_wrapper label .img {
