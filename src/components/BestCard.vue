@@ -10,7 +10,7 @@
                 <p>{{ $store.state.datas['2'][key].descrioption }}</p>
             </div>
             <div class="best_card_bottom">
-                <div>
+                <div class="money">
                     <span>Цена:</span>
                     <h4>{{ $store.state.datas['2'][key].money }}</h4>
                 </div>
@@ -34,7 +34,7 @@ export default {
 <style>
 .best_card_wrapper {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: center;
     flex-wrap: wrap;
     max-width: 1420px;
@@ -127,5 +127,22 @@ export default {
     border-radius: 6px;
     background: var(--Primary-Orange, #F47421);
     box-shadow: 0px 4px 4px 0px rgba(184, 80, 12, 0.16);
+}
+
+@media (max-width: 992px) {
+    .best_card_wrapper .best_card_bottom {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .best_card_wrapper .best_card_bottom .money {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .best_card_wrapper .best_card_bottom button {
+        width: 100%;
+    }
 }
 </style>

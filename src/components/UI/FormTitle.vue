@@ -110,4 +110,10 @@ export default {
     font-weight: 400;
     line-height: 22px;
 }
+
+@media only screen and (max-width: 992px) {
+    .warning_wrapper {
+        display: none;
+    }
+}
 </style>

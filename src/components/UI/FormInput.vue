@@ -95,7 +95,7 @@ export default {
     },
     methods: {
         checkValue () {
-            if (this.default_value.length) {
+            if (this.default_value && this.default_value.length) {
                 if (this.type === 'email') {
                     if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.default_value)) {
                         this.$emit('check_value', this.idx, this.field_name, true);

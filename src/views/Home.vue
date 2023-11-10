@@ -113,6 +113,62 @@ export default {
 </script>
 
 <style>
+  @media (max-width: 992px) {
+    .tarif .tarif_wrapper {
+      flex-wrap: wrap;
+    }
+
+    .tarif .tarif_wrapper .tarif_block {
+      width: calc(50% - 16px)
+    }
+
+    .contact_information #contact_form {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .contact_information #contact_form .input_wrapper {
+      width: 100%;
+    }
+
+    .contact_information #contact_form .main_button {
+      margin-top: 0;
+    }
+
+    .home .home_title {
+      padding-left: 20px;
+      padding-right: 20px;
+      font-size: 40px;
+    }
+
+    .home .home_content {
+      padding-left: 20px;
+      padding-right: 20px;
+    }
+
+    .home .home_content .home_content_head {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .home .home_btn {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      align-items: center;
+    }
+
+    .home .home_btn .instraction {
+      position: static;
+    }
+  }
+
+  @media (max-width: 576px) {
+    .tarif .tarif_wrapper .tarif_block {
+      width: 100%;
+    }
+  }
+
   .home{
     border-radius: 8px;
     background: #F4F3F3;

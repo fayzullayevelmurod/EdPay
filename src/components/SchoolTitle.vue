@@ -35,7 +35,7 @@ export default {
 </script>
 
 <style>
-.bestSchool .best_school_in {
+.best_school_in {
     gap: 45px;
     padding: 10px;
     display: flex;
@@ -89,5 +89,23 @@ export default {
 
 .best_text_in .best_site {
     color: #F47421;
+}
+
+@media only screen and (max-width: 1300px) {
+    .bestSchool .best_school_in {
+        max-width: calc(100vw - 40px);
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    .bestSchool .best_school_in {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .best_text .best_text_in {
+        flex-direction: column;
+        gap: 15px;
+    }
 }
 </style>

@@ -5,6 +5,7 @@ export default createStore({
     datas: {},
     current_step: 1,
     landing_show: false,
+    header_mobile: false,
   },
   getters: {
   },
@@ -17,6 +18,9 @@ export default createStore({
     },
     changeLandingShow (state, value) {
       state.landing_show = value;
+    },
+    changeHeaderMobile (state, value) {
+      state.header_mobile = value;
     }
   },
   actions: {

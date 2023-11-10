@@ -232,4 +232,37 @@ export default {
     z-index: 2;
     width: 249px;
 }
+
+@media only screen and (max-width: 1320px) {
+    .create_landing_vue .container {
+        padding: 0px 20px;
+    }
+
+    .step .line_wrapper {
+        width: 200px;
+    }
+}
+
+@media only screen and (max-width: 1050px) {
+    .steps {
+        position: relative;
+    }
+
+    .steps .step {
+        display: none;
+    }
+
+    .steps .step.active,
+    .steps .step.half-active {
+        display: flex;
+    }
+
+    .step .line_wrapper {
+        width: calc(100vw - 80px);
+    }
+
+    .step .line_active {
+        width: 50vw;
+    }
+}
 </style>

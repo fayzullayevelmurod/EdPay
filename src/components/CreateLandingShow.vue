@@ -71,4 +71,10 @@ export default {
     border: 1px solid var(--Primary-Orange, #F47421);
     box-shadow: 0px 4px 4px 0px rgba(184, 80, 12, 0.16);
 }
+
+@media only screen and (max-width: 992px) {
+    .best_card_wrapper {
+        max-width: calc(100vw - 40px);
+    }
+}
 </style>

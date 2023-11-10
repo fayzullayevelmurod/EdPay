@@ -38,17 +38,14 @@
 </template>
 
 <script>
-import Button from "@/components/Button.vue"
-import ButtonRemove from "@/components/ButtonRemove.vue"
 import file_upload_img from "@/assets/images/file_upload.svg";
-import modalStyle from '@/components/ModalStyle.vue'
 
 export default {
     name: "FileUpload",
     props: {
         idx: String,
         field_name: String,
-        value: Object,
+        value: [Object, String],
         upload_library: {
             type: Boolean,
             default: false,
@@ -59,11 +56,6 @@ export default {
         }
     },
     emits: ['update:value', 'check_value'],
-    components: {
-        Button,
-        ButtonRemove,
-        modalStyle
-    },
     data () {
         return {
             image_file: this.value,
@@ -85,15 +77,9 @@ export default {
     watch: {
         open_library_modal () {
             if (this.open_library_modal) {
-                $('body').css({
-                    overflow: 'hidden',
-                    marginRight: '21px',
-                });
+                $('body').addClass('overflow-hidden');
             } else {
-                $('body').css({
-                    overflow: 'auto',
-                    marginRight: '0',
-                });
+                $('body').removeClass('overflow-hidden');
             }
         }
     },
@@ -238,5 +224,15 @@ export default {
     display: flex;
     align-items: center;
     gap: 18px;
+}
+
+@media only screen and (max-width: 992px) {
+    .upload_file_wrapper {
+        flex-direction: column;
+    }
+    
+    .text_wrap .buttons {
+        flex-wrap: wrap;
+    }
 }
 </style>

@@ -22,6 +22,7 @@ export default {
     background: #FFF;
     box-shadow: 0px 2px 0px 0px rgba(0, 0, 0, 0.02);
     width: 42px;
+    min-width: 42px;
     height: 42px;
     display: flex;
     align-items: center;

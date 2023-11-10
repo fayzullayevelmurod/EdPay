@@ -274,9 +274,11 @@
                     <h4>Приложите фото или сканы следующих документов:</h4>
                     <div :class="`step_block ${i == 4 ? 'last_child' : ''}`" v-for="i in 4" :key="i">Документ {{i}};</div>
                     <div class="select_file">
-                        <img src="@/assets/images/file_icon.svg" alt="" class="file_icon">
-                        <p>Допустимые форматы: gif, jpg, jpeg, png, bmp, tif, tiff, pdf, doc, docx, txt, xls, xlsx<br> Размер одного файла не должен превышать 3 Mb</p>
-                        <input type="file" @change="selectFile" class="select_file_input">
+                        <div class="select_file_in">
+                            <img src="@/assets/images/file_icon.svg" alt="" class="file_icon">
+                            <p>Допустимые форматы: gif, jpg, jpeg, png, bmp, tif, tiff, pdf, doc, docx, txt, xls, xlsx<br> Размер одного файла не должен превышать 3 Mb</p>
+                            <input type="file" @change="selectFile" class="select_file_input">
+                        </div>
                         <Button title="Выбрать файл" @clicked="openSelectFile()"/>
                     </div>
                     <div v-if="error_fields['5']" class="error_text">*Прикрепите документы</div>
@@ -431,8 +433,16 @@
 </template>
 
 <script>
+import CreateLandingHead from '@/components/CreateLandingHead.vue';
+import CreateLandingShow from '@/components/CreateLandingShow.vue';
+
+
 export default {
     name: "CreateLanding",
+    components: {
+        CreateLandingHead,
+        CreateLandingShow
+    },
     data () {
         return {
             current_step: 1,
@@ -504,15 +514,9 @@ export default {
     watch: {
         delete_modal () {
             if (this.delete_modal) {
-                $('body').css({
-                    overflow: 'hidden',
-                    marginRight: '21px',
-                });
+                $('body').addClass('overflow-hidden');
             } else {
-                $('body').css({
-                    overflow: 'auto',
-                    marginRight: '0',
-                });
+                $('body').removeClass('overflow-hidden');
             }
         },
         
@@ -924,6 +928,7 @@ export default {
 
 .uploaded_block img {
     width: 48px;
+    min-width: 48px;
     height: 48px;
     object-fit: cover;
 }
@@ -954,6 +959,11 @@ export default {
     border-radius: 8px;
     border: 1px dashed var(--Disabled, #BEC1C5);
     background: var(--BG-Grey, #F6F6F6);
+}
+
+.select_file .select_file_in {
+    display: flex;
+    align-items: center;
 }
 
 .select_file button {
@@ -1582,5 +1592,123 @@ export default {
     font-style: normal;
     font-weight: 700;
     line-height: 24px;
+}
+
+@media only screen and (max-width: 1380px) {
+    .steps_foot .foot_container {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .step_6 .container {
+        padding: 0px 20px;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    .step .landing_container {
+        padding: 0px 20px;
+    }
+    .step_1 .inputs {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .steps_foot .foot_container {
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
+
+    .steps_foot .foot_container .buttons {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .step_2 .images {
+        width: 100%;
+        height: 500px;
+        overflow-y: scroll;
+    }
+
+    .step_2 .images::-webkit-scrollbar {
+        display: none;
+    }
+
+    .step_2 .images .image {
+        width: calc(100% / 3 - 6px)
+    }
+
+    .step_2 .modal_wrapper .modal_content {
+        width: calc(100% - 40px);
+    }
+
+    .step_3 .checklist_wrapper .checklist {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .step_5 .select_file {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+        padding: 34px 20px;
+    }
+    
+    .step_5 .select_file .select_file_in {
+        align-items: flex-start;
+    }
+
+    .step_5 .select_file button {
+        width: 100%;
+    }
+
+    .step_6 .card_calculation {
+        flex-direction: column;
+        gap: 20px;
+        align-items: flex-start;
+        padding: 14px;
+    }
+
+    .step_6 .card_calculation .calculation_right {
+        width: 100%;
+        justify-content: space-between;
+    }
+}
+
+@media only screen and (max-width: 550px) {
+    .step_6 .card_calculation .calculation_right {
+        width: 100%;
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+@media only screen and (max-width: 576px) {
+    .step_2 .images .image {
+        width: calc(100% / 2 - 6px)
+    }
+
+    .step_6 .calculation_form {
+        padding-left: 24px;
+    }
+
+    .step_6 .calculation_form .form_cards {
+        width: 100%;
+    }
+
+    .calculation_form_wrapper .calculation_form_inputs {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .step_6 .form_card_foot {
+        flex-direction: column-reverse;
+        gap: 20px;
+    }
+
+    .step_6 .form_card_foot .foot_text {
+        width: 100%;
+    }
 }
 </style>
